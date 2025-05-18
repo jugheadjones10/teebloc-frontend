@@ -16,7 +16,7 @@
     "@apollo/client": "^3.8.9",
     "@clerk/clerk-react": "^4.30.3",
     "@hello-pangea/dnd": "^17.0.0",
-    "@heroicons/react": "^2.1.1",
+    "@heroicons/react": "^1.0.6",
     "@react-pdf/renderer": "^3.4.4",
     "apollo3-cache-persist": "^0.15.0",
     "comlink": "^4.4.2",

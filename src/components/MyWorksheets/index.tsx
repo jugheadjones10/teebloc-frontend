@@ -130,7 +130,7 @@ export default function MyWorksheets() {
 
   return (
     <>
-      <div className="flex flex-col gap-8 mx-8">
+      <div className="flex flex-col gap-12 mx-8">
         {/* Admin-only UI: Filter worksheets by user id */}
         {isAdmin && (
           <div className="flex items-center gap-2 admin-filter">
@@ -175,7 +175,7 @@ export default function MyWorksheets() {
             <div
               key={w.id}
               id={`worksheet-${w.id}`}
-              className={`card bg-base-100 shadow-xl border-dashed ${
+              className={`card bg-base-100 shadow-xl border-dashed mb-4 ${
                 isHighlighted
                   ? "border-2 border-red-500 animate-[pulse_0.5s_ease-in-out_infinite]"
                   : "border-2 border-sky-500"

@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
+import { DownloadType } from "./pdfDownloadButton";
 
 // Define styles for the PDF document
 const styles = StyleSheet.create({
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PDFDocument({ questionsData, questionsOnly = false }) {
+export function PDFDocument({ questionsData, downloadType }) {
   if (!questionsData) return null;
 
   let questions = JSON.parse(JSON.stringify(questionsData.questions));
@@ -81,47 +82,50 @@ export function PDFDocument({ questionsData, questionsOnly = false }) {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        {sortedQuestions.map((question, questionIndex) =>
-          question.questionimgs
-            .sort((a, b) => {
-              const regex = /Q(\d+)-(\d+)\./;
-              const aMatch = a.questionimgname.match(regex);
-              const bMatch = b.questionimgname.match(regex);
-              if (aMatch && bMatch) {
-                return aMatch[2] - bMatch[2];
-              } else {
-                return 0;
-              }
-            })
-            .map((questionImage, index) => (
-              <View
-                key={questionImage.questionimgid}
-                style={{
-                  ...styles.questionImageContainer,
-                  ...(index === 0 && { marginTop: 20 }),
-                  ...(index === question.questionimgs.length - 1 && {
-                    borderBottom: "1px solid black",
-                    paddingBottom: 20,
-                  }),
-                }}
-              >
-                <Image
-                  src={`${import.meta.env.VITE_BACKEND_API}/images/question/${
-                    questionImage.questionimgid
-                  }`}
-                  style={styles.questionImage}
-                />
-                <Text style={styles.questionNumber}>
-                  {index === 0 ? questionIndex + 1 : ""}
-                </Text>
-              </View>
-            ))
-        )}
-      </Page>
+      {(downloadType === DownloadType.FULL ||
+        downloadType === DownloadType.QUESTIONS_ONLY) && (
+        <Page size="A4" style={styles.page}>
+          {sortedQuestions.map((question, questionIndex) =>
+            question.questionimgs
+              .sort((a, b) => {
+                const regex = /Q(\d+)-(\d+)\./;
+                const aMatch = a.questionimgname.match(regex);
+                const bMatch = b.questionimgname.match(regex);
+                if (aMatch && bMatch) {
+                  return aMatch[2] - bMatch[2];
+                } else {
+                  return 0;
+                }
+              })
+              .map((questionImage, index) => (
+                <View
+                  key={questionImage.questionimgid}
+                  style={{
+                    ...styles.questionImageContainer,
+                    ...(index === 0 && { marginTop: 20 }),
+                    ...(index === question.questionimgs.length - 1 && {
+                      borderBottom: "1px solid black",
+                      paddingBottom: 20,
+                    }),
+                  }}
+                >
+                  <Image
+                    src={`${import.meta.env.VITE_BACKEND_API}/images/question/${
+                      questionImage.questionimgid
+                    }`}
+                    style={styles.questionImage}
+                  />
+                  <Text style={styles.questionNumber}>
+                    {index === 0 ? questionIndex + 1 : ""}
+                  </Text>
+                </View>
+              ))
+          )}
+        </Page>
+      )}
 
-      {/* Only render answers page if questionsOnly is false */}
-      {!questionsOnly && (
+      {(downloadType === DownloadType.FULL ||
+        downloadType === DownloadType.ANSWERS_ONLY) && (
         <Page size="A4" style={styles.answersPage}>
           <Text style={styles.answersTitle}>Answers</Text>
 
