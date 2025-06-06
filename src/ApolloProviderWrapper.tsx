@@ -7,7 +7,8 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { useAuth } from "@clerk/clerk-react";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
+import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 
 function destructureArgs(args: any) {
   const {
@@ -45,8 +46,14 @@ function destructureArgs(args: any) {
   };
 }
 
-export const ApolloProviderWrapper = ({ children }) => {
+export const ApolloProviderWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { getToken } = useAuth();
+  const [cacheRestored, setCacheRestored] = useState(false);
+
   const apolloClient = useMemo(() => {
     const authMiddleware = setContext(async (req, { headers }) => {
       // const token = await getToken({ template: "hasura" });
@@ -68,9 +75,29 @@ export const ApolloProviderWrapper = ({ children }) => {
       typePolicies: {
         Query: {
           fields: {
+            // Aggressive caching for GET_ALL_OPTIONS fields
+            levels: {
+              merge: false, // Replace existing data rather than merging
+            },
+            subjects: {
+              merge: false,
+            },
+            topics: {
+              merge: false,
+            },
+            papers: {
+              merge: false,
+            },
+            assessments: {
+              merge: false,
+            },
+            schools: {
+              merge: false,
+            },
             questions: {
               keyArgs: false,
               read(existing, { args, readField }) {
+                if (!args) return undefined;
                 if (args.where.id && existing) {
                   const ids = args.where.id._in;
                   const homeQs = [];
@@ -78,7 +105,7 @@ export const ApolloProviderWrapper = ({ children }) => {
                     for (const [key, value] of Object.entries(
                       existing["home"]
                     )) {
-                      homeQs.push(...value);
+                      homeQs.push(...(value as any[]));
                     }
                   }
 
@@ -151,6 +178,7 @@ export const ApolloProviderWrapper = ({ children }) => {
                 return undefined;
               },
               merge(existing = {}, incoming, { args, readField }) {
+                if (!args) return existing;
                 // This is for the questions query in the app homepage
                 if (
                   args.hasOwnProperty("offset") &&
@@ -217,6 +245,34 @@ export const ApolloProviderWrapper = ({ children }) => {
       cache,
     });
   }, [getToken]);
+
+  // Local storage caching so that data like ALL_DATA can immediately be used
+  // to show the options.
+  useEffect(() => {
+    const initializeCache = async () => {
+      try {
+        await persistCache({
+          cache: apolloClient.cache,
+          storage: new LocalStorageWrapper(window.localStorage),
+          key: "teebloc-apollo-cache",
+          maxSize: 1024 * 1024 * 5, // 5MB
+          serialize: true,
+          trigger: "write", // Persist on every cache write
+        });
+        setCacheRestored(true);
+      } catch (error) {
+        console.error("Error restoring Apollo cache:", error);
+        setCacheRestored(true); // Continue even if cache restoration fails
+      }
+    };
+
+    initializeCache();
+  }, [apolloClient]); // Run whenever apolloClient changes
+
+  // Don't render until cache is restored
+  if (!cacheRestored) {
+    return <div>Loading...</div>; // Or your loading component
+  }
 
   return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
 };

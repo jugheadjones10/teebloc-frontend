@@ -28,7 +28,7 @@ const Menu = (props) => {
 };
 
 const MultiValue = ({ index, getValue, ...props }) => {
-  const maxToShow = 1;
+  const maxToShow = 5;
   const length = getValue().length;
 
   return length <= maxToShow ? (

@@ -1,25 +1,13 @@
 import { makeVar, useReactiveVar } from "@apollo/client";
 import qs from "qs";
 import { useCallback, useEffect, useMemo } from "react";
-import { useLocation, useSearch, useNavigate } from "wouter";
+import { useLocation, useSearch } from "wouter";
 
-function transformIncoming(value) {
-  if (!value) return null;
-  return Array.isArray(value) ? value.map((v) => v.value) : value.value;
-}
-
-function transformOutgoing(value) {
-  // If initial value is null, we want to return null as well so that the placeholder is shown in react-select
-  if (!value) return value;
-  return Array.isArray(value)
-    ? value.map((v) => ({ value: v, label: v }))
-    : { value, label: value };
-}
-
-export const questionsSearchParams = makeVar();
+export const questionsSearchParams = makeVar(
+  localStorage.getItem("questionsSearchParams") || ""
+);
 
 export const useQueryParamsState = (query: string, initialValue: any) => {
-  const { setQueries } = useQueryUpdater();
   const [location, setLocation] = useLocation();
   const searchParams = useSearch();
   const questionsSearchParamsVar = useReactiveVar(questionsSearchParams);
@@ -36,13 +24,6 @@ export const useQueryParamsState = (query: string, initialValue: any) => {
       }`
     );
   }, [questionsSearchParamsVar]);
-
-  const setQuery = useCallback(
-    (value) => {
-      setQueries({ [query]: value });
-    },
-    [setQueries]
-  );
 
   // Only use searchParams to set questionsSearchParams on first load
   // We need this so that even if the search param changes when user navigates to another page in the app,
@@ -65,11 +46,8 @@ export const useQueryParamsState = (query: string, initialValue: any) => {
     return parsed[query] || initialValue;
   }, [searchParams, query]);
 
-  return [
-    // If value is an array, return an array of objects with value and label. If not, just return one <object data="
-    transformOutgoing(parsedValue),
-    setQuery,
-  ];
+  // If value is an array, return an array of objects with value and label. If not, just return one <object data="
+  return parsedValue;
 };
 
 export function useQueryUpdater() {
@@ -87,7 +65,7 @@ export function useQueryUpdater() {
       const transformedUpdates = Object.entries(updates).reduce(
         (acc, [key, value]) => ({
           ...acc,
-          [key]: transformIncoming(value),
+          [key]: value,
         }),
         {}
       );
@@ -103,6 +81,8 @@ export function useQueryUpdater() {
       console.log("queryString", queryString);
 
       questionsSearchParams(queryString);
+      if (queryString !== "")
+        localStorage.setItem("questionsSearchParams", queryString);
     },
     [setLocation, location, searchParams]
   );

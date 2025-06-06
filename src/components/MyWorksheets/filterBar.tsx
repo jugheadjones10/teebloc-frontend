@@ -1,8 +1,6 @@
-import { useMemo, useEffect } from "react";
-import { MultiValue, OnChangeValue } from "react-select";
+import { useMemo, useEffect, useState } from "react";
 import { Option } from "../Options/index";
 import CustomSelect from "../CusomSelect";
-import { useQueryParamsState } from "../Options/hook";
 import { GetUserWorksheetsQuery } from "../../__generated__/graphql";
 
 const commonSelectSettings = {
@@ -49,17 +47,11 @@ export default function FilterBar({
   setIsChanged: (isChanged: boolean) => void;
 }) {
   // State management
-  const [filteredLevels, setfilteredLevels] = useQueryParamsState("levels", []);
-  const [filteredTopics, setfilteredTopics] = useQueryParamsState("topics", []);
-  const [filteredPapers, setfilteredPapers] = useQueryParamsState("papers", []);
-  const [filteredAssessments, setfilteredAssessments] = useQueryParamsState(
-    "assessments",
-    []
-  );
-  const [filteredSubjects, setfilteredSubjects] = useQueryParamsState(
-    "subjects",
-    []
-  );
+  const [filteredLevels, setfilteredLevels] = useState<Option[]>([]);
+  const [filteredTopics, setfilteredTopics] = useState<Option[]>([]);
+  const [filteredPapers, setfilteredPapers] = useState<Option[]>([]);
+  const [filteredAssessments, setfilteredAssessments] = useState<Option[]>([]);
+  const [filteredSubjects, setfilteredSubjects] = useState<Option[]>([]);
 
   // Helper to extract .value from Option[]
   const getValues = (arr: Option[]) => arr.map((o) => o.value);
@@ -130,7 +122,7 @@ export default function FilterBar({
     setIsChanged(true);
   }, [filtered]);
 
-  const updateFilter = (filterType: string, values: MultiValue<Option>) => {
+  const updateFilter = (filterType: string, values: Option[]) => {
     switch (filterType) {
       case "levels":
         setfilteredLevels(values);
@@ -235,7 +227,7 @@ export default function FilterBar({
         isSearchable={false}
         isMulti
         value={filteredLevels}
-        onChange={(filteredLevels: OnChangeValue<Option, true>) => {
+        onChange={(filteredLevels: Option[]) => {
           updateFilter("levels", filteredLevels || []);
         }}
         options={levelOptions}
@@ -251,7 +243,7 @@ export default function FilterBar({
         isSearchable={false}
         isMulti
         value={filteredSubjects}
-        onChange={(filteredSubjects: OnChangeValue<Option, true>) => {
+        onChange={(filteredSubjects: Option[]) => {
           updateFilter("subjects", filteredSubjects || []);
         }}
         options={subjectOptions}
@@ -267,7 +259,7 @@ export default function FilterBar({
         isSearchable
         isMulti
         value={filteredTopics}
-        onChange={(filteredTopics: OnChangeValue<Option, true>) => {
+        onChange={(filteredTopics: Option[]) => {
           updateFilter("topics", filteredTopics || []);
         }}
         options={topicOptions}
@@ -283,7 +275,7 @@ export default function FilterBar({
         isSearchable={false}
         isMulti
         value={filteredPapers}
-        onChange={(filteredPapers: OnChangeValue<Option, true>) => {
+        onChange={(filteredPapers: Option[]) => {
           updateFilter("papers", filteredPapers || []);
         }}
         options={paperOptions}
@@ -299,7 +291,7 @@ export default function FilterBar({
         isSearchable={false}
         isMulti
         value={filteredAssessments}
-        onChange={(filteredAssessments: OnChangeValue<Option, true>) => {
+        onChange={(filteredAssessments: Option[]) => {
           updateFilter("assessments", filteredAssessments || []);
         }}
         options={assessmentOptions}

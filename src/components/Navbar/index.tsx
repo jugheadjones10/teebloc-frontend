@@ -44,11 +44,18 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
+  const [queryString, setQueryString] = useState(
+    localStorage.getItem("questionsSearchParams") || ""
+  );
+  useEffect(() => {
+    setQueryString(localStorage.getItem("questionsSearchParams") || "");
+  }, [localStorage.getItem("questionsSearchParams")]);
+
   return (
     <div className="p-4 sticky top-0 z-10">
       <div className="navbar bg-primary rounded-box">
         <div className="navbar-start flex items-center">
-          <Link href="/practice">
+          <Link href={`/practice${queryString ? `?${queryString}` : ""}`}>
             <div className="text-xl mr-2">Teebloc</div>
           </Link>
           <div className="dropdown">
@@ -72,7 +79,11 @@ export default function Navbar() {
                     "hover:bg-base-300",
                     location.startsWith("/practice") ? "bg-base-300" : ""
                   )}
-                  onClick={() => setLocation("/practice")}
+                  onClick={() =>
+                    setLocation(
+                      `/practice${queryString ? `?${queryString}` : ""}`
+                    )
+                  }
                 >
                   Practice
                 </a>
