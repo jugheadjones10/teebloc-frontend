@@ -18,6 +18,7 @@ import { PDFDocument } from "../MyWorksheets/pdf";
 import { DownloadType } from "../MyWorksheets/pdfDownloadButton";
 import posthog from "posthog-js";
 import { useIsAdmin } from "../../hooks/useIsAdmin";
+import { WorksheetsMappingContext } from "../../context/WorksheetsMappingContext";
 
 export interface Option {
   readonly value: string;
@@ -527,18 +528,19 @@ export default function Options() {
           No results. Try selecting more options to broaden your search!
         </div>
       )}
-      <Questions
-        questions={displayedQuestions}
-        loading={q_loading}
-        onLoadMore={() => {
-          fetchMore({
-            variables: {
-              offset: q_data?.questions.length,
-            },
-          });
-        }}
-        worksheetsMapping={worksheetsMapping}
-      />
+      <WorksheetsMappingContext.Provider value={worksheetsMapping}>
+        <Questions
+          questions={displayedQuestions}
+          loading={q_loading}
+          onLoadMore={() => {
+            fetchMore({
+              variables: {
+                offset: q_data?.questions.length,
+              },
+            });
+          }}
+        />
+      </WorksheetsMappingContext.Provider>
       {showScrollTopButton && (
         <button
           onClick={scrollToTop}

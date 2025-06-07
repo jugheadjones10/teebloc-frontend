@@ -3,7 +3,20 @@ import { useState } from "react";
 import { DELETE_WORKSHEET_AND_RELATIONS } from "./data";
 
 /**
- * Helper function to fetch questions data for a worksheet.
+ * Fetches questions for a worksheet while intelligently falling back to the network only
+ * when the Apollo cache is incomplete.
+ *
+ * Behaviour:
+ * 1. Run the query with the default `cache-first` policy (cheap ‑ uses cache when possible).
+ * 2. Check how many questions came back. If that count equals `expectedNumQuestions`, the
+ *    cache already holds everything we need, so we return the result immediately.
+ * 3. If the cache is missing any of the expected questions, immediately re-execute the
+ *    same query with `fetchPolicy: "network-only"` to bypass the cache and fetch a fresh,
+ *    complete data set.
+ *
+ * In short, this helper lets callers "attempt cache, guarantee completeness" without having
+ * to decide between `cache-first` and `network-only` every time they query for a list of
+ * questions.
  */
 export async function useLazyQuestionsQuery(
   client: any,
