@@ -21,7 +21,39 @@ export default function Questions({
 }) {
   const cartItems = useReactiveVar(cartItemsVar);
   const [similarQuestionsPressed, setSimilarQuestionsPressed] = useState(false);
+  const [similarQuestionsFetched, setSimilarQuestionsFetched] = useState<
+    string[]
+  >([]);
   const [canScrollMain, setCanScrollMain] = useState(true);
+
+  const [estimatedTimes, setEstimatedTimes] = useState<number[]>([]);
+  const [actualTimes, setActualTimes] = useState<number[]>([]);
+  const [result, setResult] = useState<{ [key: string]: number }>({});
+  const alpha = 0.5;
+  const initialEstimatedTime = 6000; // initial estimate in milliseconds
+
+  // use exponential smoothing to estimate the time
+  function getEstimatedTime(id: string): number {
+    if (result && result[id]) return result[id];
+    if (estimatedTimes.length === 0 || actualTimes.length === 0) {
+      setEstimatedTimes([initialEstimatedTime]);
+      setResult((prev) => ({
+        ...prev,
+        [id]: initialEstimatedTime,
+      }));
+      return initialEstimatedTime;
+    }
+    const lastEstimatedTime = estimatedTimes[estimatedTimes.length - 1];
+    const newEstimatedTime =
+      alpha * actualTimes[actualTimes.length - 1] +
+      (1 - alpha) * lastEstimatedTime;
+    setEstimatedTimes([...estimatedTimes, newEstimatedTime]);
+    setResult((prev) => ({
+      ...prev,
+      [id]: newEstimatedTime,
+    }));
+    return newEstimatedTime;
+  }
 
   useEffect(() => {
     if (!canScrollMain) {
@@ -47,6 +79,11 @@ export default function Questions({
             // when it is pressed for one question
             similarQuestionsPressed={similarQuestionsPressed}
             setSimilarQuestionsPressed={setSimilarQuestionsPressed}
+            similarQuestionsFetched={similarQuestionsFetched}
+            setSimilarQuestionsFetched={setSimilarQuestionsFetched}
+            actualTimes={actualTimes}
+            setActualTimes={setActualTimes}
+            getEstimatedTime={getEstimatedTime}
             setCanScrollMain={setCanScrollMain}
           />
         ))}
