@@ -31,11 +31,9 @@ function App() {
         <Route path="/">
           <Redirect to="/practice" />
         </Route>
-
         <Route path="/marked/:id">
           {(params) => <Feedback id={params.id} />}
         </Route>
-
         <SignedIn>
           <Route path="/practice" nest>
             <Route path="/">
@@ -70,7 +68,7 @@ function TelegramPromotionBanner() {
         href="https://t.me/+73EyKsz68qBmMzFl"
         target="_blank"
         rel="noopener noreferrer"
-        className="hover:underline flex items-center justify-center gap-1"
+        className="flex items-center justify-center gap-1 hover:underline"
       >
         <svg
           role="img"
