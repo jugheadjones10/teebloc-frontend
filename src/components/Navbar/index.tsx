@@ -13,6 +13,8 @@ import { cartItemsVar } from "../CreateWorksheet/data.tsx";
 import posthog from "posthog-js";
 import { useState, useEffect, useRef } from "react";
 import { useSubscription } from "../../hooks/useSubscription.ts";
+import CreateInviteModal from "../Invite/index.tsx";
+import PromoCodeModal from "../Subscribe/modal.tsx";
 
 export default function Navbar() {
   const { signOut } = useClerk();
@@ -52,17 +54,17 @@ export default function Navbar() {
   }, [localStorage.getItem("questionsSearchParams")]);
 
   return (
-    <div className="p-4 sticky top-0 z-10">
+    <div className="sticky top-0 z-10 p-4">
       <div className="navbar bg-primary rounded-box">
         <div className="navbar-start flex items-center">
           <Link href={`/practice${queryString ? `?${queryString}` : ""}`}>
             <div className="text-xl mr-2">Teebloc</div>
           </Link>
           <div className="dropdown">
-            <label tabIndex={0} className="btn btn-ghost m-1">
+            <label tabIndex={0} className="m-1 btn btn-ghost">
               {location.startsWith("/practice") ? "Practice" : "Writing"}
               <svg
-                className="fill-current h-4 w-4 ml-1"
+                className="w-4 h-4 ml-1 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
               >
@@ -103,7 +105,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex sm:hidden ml-auto relative" ref={menuRef}>
+        <div className="relative flex ml-auto sm:hidden" ref={menuRef}>
           <button
             className="btn btn-square btn-ghost"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -112,7 +114,7 @@ export default function Navbar() {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              className="inline-block h-5 w-5 stroke-current"
+              className="inline-block w-5 h-5 stroke-current"
             >
               <path
                 strokeLinecap="round"
@@ -123,7 +125,7 @@ export default function Navbar() {
             </svg>
           </button>
           {menuOpen && (
-            <div className="absolute top-full right-0 mt-2 menu bg-primary rounded-box w-44 shadow-lg space-y-2">
+            <div className="absolute right-0 mt-2 space-y-2 shadow-lg top-full menu bg-primary rounded-box w-44">
               <NavItems
                 location={location}
                 cartItems={cartItems}
@@ -133,7 +135,7 @@ export default function Navbar() {
           )}
         </div>
 
-        <div className="navbar-end space-x-2 hidden sm:flex">
+        <div className="hidden space-x-2 navbar-end sm:flex">
           <NavItems
             location={location}
             cartItems={cartItems}
@@ -160,6 +162,8 @@ function NavItems({
   const practiceMatch = location.startsWith("/practice");
   const { hasActiveSubscription, loading } = useSubscription();
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [openInviteModal, setOpenInviteModal] = useState(false);
+  const [openPromoCodeModal, setOpenPromoCodeModal] = useState(false);
 
   // Modified from https://clerk.com/docs/backend-requests/making/cross-origin
   const authenticatedFetch = async (url: string, options?: RequestInit) => {
@@ -233,6 +237,16 @@ function NavItems({
           </>
         )}
 
+        <CreateInviteModal
+          isOpen={openInviteModal}
+          onClose={() => setOpenInviteModal(false)}
+        />
+
+        <PromoCodeModal
+          isOpen={openPromoCodeModal}
+          onClose={() => setOpenPromoCodeModal(false)}
+        />
+
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-outline">
             Profile
@@ -273,6 +287,19 @@ function NavItems({
                     "Manage subscription"
                   )}
                 </a>
+              </li>
+            )}
+            {hasActiveSubscription ? (
+              <li>
+                <button onClick={() => setOpenPromoCodeModal(true)}>
+                  Refer friend for subscription discount
+                </button>
+              </li>
+            ) : (
+              <li>
+                <button onClick={() => setOpenInviteModal(true)}>
+                  Generate invite link
+                </button>
               </li>
             )}
             <li>

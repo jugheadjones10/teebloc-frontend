@@ -22,6 +22,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { isReorderModeVar } from "./data";
 import { _ } from "lodash";
 import { DownloadType } from "../MyWorksheets/pdfDownloadButton";
+import CreateInviteModal from "../Invite";
 
 export default function CreateWorksheet() {
   const [location, setLocation] = useLocation();
@@ -30,6 +31,7 @@ export default function CreateWorksheet() {
   const isReorderMode = useReactiveVar(isReorderModeVar);
   const { hasActiveSubscription, loading: subscriptionStateLoading } =
     useSubscription();
+  const [openInviteModal, setOpenInviteModal] = useState(false);
 
   const toggleReorderMode = () => {
     isReorderModeVar(!isReorderMode);
@@ -346,6 +348,11 @@ export default function CreateWorksheet() {
         </div>
       )}
 
+      <CreateInviteModal
+        isOpen={openInviteModal}
+        onClose={() => setOpenInviteModal(false)}
+      />
+
       <div className="fixed z-10 flex flex-row items-end gap-4 bottom-4 right-4">
         <div
           onClick={() => {
@@ -373,26 +380,34 @@ export default function CreateWorksheet() {
             </button>
           </div>
         ) : (
-          <button
-            onClick={() => {
-              if (!subscriptionStateLoading && hasActiveSubscription) {
-                handleDownload();
-              }
-            }}
-            disabled={subscriptionStateLoading}
-            className={twMerge(
-              "btn btn-neutral btn-lg w-56",
-              !hasActiveSubscription && "btn-outline "
-            )}
-          >
-            {subscriptionStateLoading || downloadLoading ? (
-              <span className="loading loading-spinner"></span>
-            ) : hasActiveSubscription ? (
-              "Create worksheet"
-            ) : (
-              <Link href="/subscribe">Subscribe to create worksheet</Link>
-            )}
-          </button>
+          <>
+            <button
+              onClick={() => {
+                if (!subscriptionStateLoading && hasActiveSubscription) {
+                  handleDownload();
+                }
+              }}
+              disabled={subscriptionStateLoading}
+              className={twMerge(
+                "btn btn-neutral btn-lg w-56",
+                !hasActiveSubscription && "btn-outline "
+              )}
+            >
+              {subscriptionStateLoading || downloadLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : hasActiveSubscription ? (
+                "Create worksheet"
+              ) : (
+                <Link href="/subscribe">Subscribe to create worksheet</Link>
+              )}
+            </button>
+            <button
+              className="btn btn-neutral btn-lg btn-outline w-56"
+              onClick={() => setOpenInviteModal(true)}
+            >
+              Refer to get more free worksheets
+            </button>
+          </>
         )}
       </div>
     </div>
