@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
   questionImage: {
     // Using width: "70%" sometimes causes the PDF rendering to take infinitely long.
     // width: "70%",
-    width: 300,
-    // width: 400,
+    width: 400,
+    maxHeight: 800,
   },
   answersPage: {
     flexDirection: "column",
