@@ -17,7 +17,9 @@ export type Scalars = {
   bigint: { input: any; output: any; }
   bpchar: { input: any; output: any; }
   bytea: { input: any; output: any; }
+  json: { input: any; output: any; }
   timestamp: { input: any; output: any; }
+  uuid: { input: any; output: any; }
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -1228,6 +1230,360 @@ export enum Cursor_Ordering {
   Desc = 'DESC'
 }
 
+/** columns and relationships of "custom_answer_imgs" */
+export type Custom_Answer_Imgs = {
+  __typename?: 'custom_answer_imgs';
+  author_id: Scalars['String']['output'];
+  customanswerimg: Scalars['bytea']['output'];
+  customanswerimgid: Scalars['bigint']['output'];
+  question_id: Scalars['String']['output'];
+};
+
+/** aggregated selection of "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Aggregate = {
+  __typename?: 'custom_answer_imgs_aggregate';
+  aggregate?: Maybe<Custom_Answer_Imgs_Aggregate_Fields>;
+  nodes: Array<Custom_Answer_Imgs>;
+};
+
+/** aggregate fields of "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Aggregate_Fields = {
+  __typename?: 'custom_answer_imgs_aggregate_fields';
+  avg?: Maybe<Custom_Answer_Imgs_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Custom_Answer_Imgs_Max_Fields>;
+  min?: Maybe<Custom_Answer_Imgs_Min_Fields>;
+  stddev?: Maybe<Custom_Answer_Imgs_Stddev_Fields>;
+  stddev_pop?: Maybe<Custom_Answer_Imgs_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Custom_Answer_Imgs_Stddev_Samp_Fields>;
+  sum?: Maybe<Custom_Answer_Imgs_Sum_Fields>;
+  var_pop?: Maybe<Custom_Answer_Imgs_Var_Pop_Fields>;
+  var_samp?: Maybe<Custom_Answer_Imgs_Var_Samp_Fields>;
+  variance?: Maybe<Custom_Answer_Imgs_Variance_Fields>;
+};
+
+
+/** aggregate fields of "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Custom_Answer_Imgs_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Custom_Answer_Imgs_Avg_Fields = {
+  __typename?: 'custom_answer_imgs_avg_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "custom_answer_imgs". All fields are combined with a logical 'AND'. */
+export type Custom_Answer_Imgs_Bool_Exp = {
+  _and?: InputMaybe<Array<Custom_Answer_Imgs_Bool_Exp>>;
+  _not?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+  _or?: InputMaybe<Array<Custom_Answer_Imgs_Bool_Exp>>;
+  author_id?: InputMaybe<String_Comparison_Exp>;
+  customanswerimg?: InputMaybe<Bytea_Comparison_Exp>;
+  customanswerimgid?: InputMaybe<Bigint_Comparison_Exp>;
+  question_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "custom_answer_imgs" */
+export enum Custom_Answer_Imgs_Constraint {
+  /** unique or primary key constraint on columns "customanswerimgid" */
+  CustomAnswerImgsPkey = 'custom_answer_imgs_pkey'
+}
+
+/** input type for incrementing numeric columns in table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Inc_Input = {
+  customanswerimgid?: InputMaybe<Scalars['bigint']['input']>;
+};
+
+/** input type for inserting data into table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Insert_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  customanswerimg?: InputMaybe<Scalars['bytea']['input']>;
+  customanswerimgid?: InputMaybe<Scalars['bigint']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Custom_Answer_Imgs_Max_Fields = {
+  __typename?: 'custom_answer_imgs_max_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  customanswerimgid?: Maybe<Scalars['bigint']['output']>;
+  question_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Custom_Answer_Imgs_Min_Fields = {
+  __typename?: 'custom_answer_imgs_min_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  customanswerimgid?: Maybe<Scalars['bigint']['output']>;
+  question_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Mutation_Response = {
+  __typename?: 'custom_answer_imgs_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Custom_Answer_Imgs>;
+};
+
+/** on_conflict condition type for table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_On_Conflict = {
+  constraint: Custom_Answer_Imgs_Constraint;
+  update_columns?: Array<Custom_Answer_Imgs_Update_Column>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "custom_answer_imgs". */
+export type Custom_Answer_Imgs_Order_By = {
+  author_id?: InputMaybe<Order_By>;
+  customanswerimg?: InputMaybe<Order_By>;
+  customanswerimgid?: InputMaybe<Order_By>;
+  question_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: custom_answer_imgs */
+export type Custom_Answer_Imgs_Pk_Columns_Input = {
+  customanswerimgid: Scalars['bigint']['input'];
+};
+
+/** select columns of table "custom_answer_imgs" */
+export enum Custom_Answer_Imgs_Select_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  Customanswerimg = 'customanswerimg',
+  /** column name */
+  Customanswerimgid = 'customanswerimgid',
+  /** column name */
+  QuestionId = 'question_id'
+}
+
+/** input type for updating data in table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Set_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  customanswerimg?: InputMaybe<Scalars['bytea']['input']>;
+  customanswerimgid?: InputMaybe<Scalars['bigint']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Custom_Answer_Imgs_Stddev_Fields = {
+  __typename?: 'custom_answer_imgs_stddev_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Custom_Answer_Imgs_Stddev_Pop_Fields = {
+  __typename?: 'custom_answer_imgs_stddev_pop_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Custom_Answer_Imgs_Stddev_Samp_Fields = {
+  __typename?: 'custom_answer_imgs_stddev_samp_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "custom_answer_imgs" */
+export type Custom_Answer_Imgs_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Custom_Answer_Imgs_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Custom_Answer_Imgs_Stream_Cursor_Value_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  customanswerimg?: InputMaybe<Scalars['bytea']['input']>;
+  customanswerimgid?: InputMaybe<Scalars['bigint']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Custom_Answer_Imgs_Sum_Fields = {
+  __typename?: 'custom_answer_imgs_sum_fields';
+  customanswerimgid?: Maybe<Scalars['bigint']['output']>;
+};
+
+/** update columns of table "custom_answer_imgs" */
+export enum Custom_Answer_Imgs_Update_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  Customanswerimg = 'customanswerimg',
+  /** column name */
+  Customanswerimgid = 'customanswerimgid',
+  /** column name */
+  QuestionId = 'question_id'
+}
+
+export type Custom_Answer_Imgs_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Custom_Answer_Imgs_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Custom_Answer_Imgs_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Custom_Answer_Imgs_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Custom_Answer_Imgs_Var_Pop_Fields = {
+  __typename?: 'custom_answer_imgs_var_pop_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Custom_Answer_Imgs_Var_Samp_Fields = {
+  __typename?: 'custom_answer_imgs_var_samp_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Custom_Answer_Imgs_Variance_Fields = {
+  __typename?: 'custom_answer_imgs_variance_fields';
+  customanswerimgid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets = {
+  __typename?: 'custom_answers_for_worksheets';
+  answer: Scalars['json']['output'];
+  author_id: Scalars['String']['output'];
+  question_id: Scalars['String']['output'];
+};
+
+
+/** columns and relationships of "custom_answers_for_worksheets" */
+export type Custom_Answers_For_WorksheetsAnswerArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Aggregate = {
+  __typename?: 'custom_answers_for_worksheets_aggregate';
+  aggregate?: Maybe<Custom_Answers_For_Worksheets_Aggregate_Fields>;
+  nodes: Array<Custom_Answers_For_Worksheets>;
+};
+
+/** aggregate fields of "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Aggregate_Fields = {
+  __typename?: 'custom_answers_for_worksheets_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Custom_Answers_For_Worksheets_Max_Fields>;
+  min?: Maybe<Custom_Answers_For_Worksheets_Min_Fields>;
+};
+
+
+/** aggregate fields of "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Custom_Answers_For_Worksheets_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "custom_answers_for_worksheets". All fields are combined with a logical 'AND'. */
+export type Custom_Answers_For_Worksheets_Bool_Exp = {
+  _and?: InputMaybe<Array<Custom_Answers_For_Worksheets_Bool_Exp>>;
+  _not?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+  _or?: InputMaybe<Array<Custom_Answers_For_Worksheets_Bool_Exp>>;
+  answer?: InputMaybe<Json_Comparison_Exp>;
+  author_id?: InputMaybe<String_Comparison_Exp>;
+  question_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Insert_Input = {
+  answer?: InputMaybe<Scalars['json']['input']>;
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Custom_Answers_For_Worksheets_Max_Fields = {
+  __typename?: 'custom_answers_for_worksheets_max_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  question_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Custom_Answers_For_Worksheets_Min_Fields = {
+  __typename?: 'custom_answers_for_worksheets_min_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  question_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Mutation_Response = {
+  __typename?: 'custom_answers_for_worksheets_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Custom_Answers_For_Worksheets>;
+};
+
+/** Ordering options when selecting data from "custom_answers_for_worksheets". */
+export type Custom_Answers_For_Worksheets_Order_By = {
+  answer?: InputMaybe<Order_By>;
+  author_id?: InputMaybe<Order_By>;
+  question_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "custom_answers_for_worksheets" */
+export enum Custom_Answers_For_Worksheets_Select_Column {
+  /** column name */
+  Answer = 'answer',
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  QuestionId = 'question_id'
+}
+
+/** input type for updating data in table "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Set_Input = {
+  answer?: InputMaybe<Scalars['json']['input']>;
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "custom_answers_for_worksheets" */
+export type Custom_Answers_For_Worksheets_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Custom_Answers_For_Worksheets_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Custom_Answers_For_Worksheets_Stream_Cursor_Value_Input = {
+  answer?: InputMaybe<Scalars['json']['input']>;
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  question_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Custom_Answers_For_Worksheets_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Custom_Answers_For_Worksheets_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Custom_Answers_For_Worksheets_Bool_Exp;
+};
+
+/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+export type Json_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['json']['input']>;
+  _gt?: InputMaybe<Scalars['json']['input']>;
+  _gte?: InputMaybe<Scalars['json']['input']>;
+  _in?: InputMaybe<Array<Scalars['json']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['json']['input']>;
+  _lte?: InputMaybe<Scalars['json']['input']>;
+  _neq?: InputMaybe<Scalars['json']['input']>;
+  _nin?: InputMaybe<Array<Scalars['json']['input']>>;
+};
+
 /** columns and relationships of "levels" */
 export type Levels = {
   __typename?: 'levels';
@@ -1537,6 +1893,12 @@ export type Mutation_Root = {
   delete_completedquestions?: Maybe<Completedquestions_Mutation_Response>;
   /** delete single row from the table: "completedquestions" */
   delete_completedquestions_by_pk?: Maybe<Completedquestions>;
+  /** delete data from the table: "custom_answer_imgs" */
+  delete_custom_answer_imgs?: Maybe<Custom_Answer_Imgs_Mutation_Response>;
+  /** delete single row from the table: "custom_answer_imgs" */
+  delete_custom_answer_imgs_by_pk?: Maybe<Custom_Answer_Imgs>;
+  /** delete data from the table: "custom_answers_for_worksheets" */
+  delete_custom_answers_for_worksheets?: Maybe<Custom_Answers_For_Worksheets_Mutation_Response>;
   /** delete data from the table: "levels" */
   delete_levels?: Maybe<Levels_Mutation_Response>;
   /** delete single row from the table: "levels" */
@@ -1553,6 +1915,10 @@ export type Mutation_Root = {
   delete_pendingpayments?: Maybe<Pendingpayments_Mutation_Response>;
   /** delete single row from the table: "pendingpayments" */
   delete_pendingpayments_by_pk?: Maybe<Pendingpayments>;
+  /** delete data from the table: "promo_code_redemptions" */
+  delete_promo_code_redemptions?: Maybe<Promo_Code_Redemptions_Mutation_Response>;
+  /** delete data from the table: "published_worksheets" */
+  delete_published_worksheets?: Maybe<Published_Worksheets_Mutation_Response>;
   /** delete data from the table: "pyps" */
   delete_pyps?: Maybe<Pyps_Mutation_Response>;
   /** delete single row from the table: "pyps" */
@@ -1601,6 +1967,10 @@ export type Mutation_Root = {
   delete_subscriptions?: Maybe<Subscriptions_Mutation_Response>;
   /** delete single row from the table: "subscriptions" */
   delete_subscriptions_by_pk?: Maybe<Subscriptions>;
+  /** delete data from the table: "temp_worksheets" */
+  delete_temp_worksheets?: Maybe<Temp_Worksheets_Mutation_Response>;
+  /** delete single row from the table: "temp_worksheets" */
+  delete_temp_worksheets_by_pk?: Maybe<Temp_Worksheets>;
   /** delete data from the table: "topics" */
   delete_topics?: Maybe<Topics_Mutation_Response>;
   /** delete single row from the table: "topics" */
@@ -1637,6 +2007,14 @@ export type Mutation_Root = {
   insert_completedquestions?: Maybe<Completedquestions_Mutation_Response>;
   /** insert a single row into the table: "completedquestions" */
   insert_completedquestions_one?: Maybe<Completedquestions>;
+  /** insert data into the table: "custom_answer_imgs" */
+  insert_custom_answer_imgs?: Maybe<Custom_Answer_Imgs_Mutation_Response>;
+  /** insert a single row into the table: "custom_answer_imgs" */
+  insert_custom_answer_imgs_one?: Maybe<Custom_Answer_Imgs>;
+  /** insert data into the table: "custom_answers_for_worksheets" */
+  insert_custom_answers_for_worksheets?: Maybe<Custom_Answers_For_Worksheets_Mutation_Response>;
+  /** insert a single row into the table: "custom_answers_for_worksheets" */
+  insert_custom_answers_for_worksheets_one?: Maybe<Custom_Answers_For_Worksheets>;
   /** insert data into the table: "levels" */
   insert_levels?: Maybe<Levels_Mutation_Response>;
   /** insert a single row into the table: "levels" */
@@ -1653,6 +2031,14 @@ export type Mutation_Root = {
   insert_pendingpayments?: Maybe<Pendingpayments_Mutation_Response>;
   /** insert a single row into the table: "pendingpayments" */
   insert_pendingpayments_one?: Maybe<Pendingpayments>;
+  /** insert data into the table: "promo_code_redemptions" */
+  insert_promo_code_redemptions?: Maybe<Promo_Code_Redemptions_Mutation_Response>;
+  /** insert a single row into the table: "promo_code_redemptions" */
+  insert_promo_code_redemptions_one?: Maybe<Promo_Code_Redemptions>;
+  /** insert data into the table: "published_worksheets" */
+  insert_published_worksheets?: Maybe<Published_Worksheets_Mutation_Response>;
+  /** insert a single row into the table: "published_worksheets" */
+  insert_published_worksheets_one?: Maybe<Published_Worksheets>;
   /** insert data into the table: "pyps" */
   insert_pyps?: Maybe<Pyps_Mutation_Response>;
   /** insert a single row into the table: "pyps" */
@@ -1701,6 +2087,10 @@ export type Mutation_Root = {
   insert_subscriptions?: Maybe<Subscriptions_Mutation_Response>;
   /** insert a single row into the table: "subscriptions" */
   insert_subscriptions_one?: Maybe<Subscriptions>;
+  /** insert data into the table: "temp_worksheets" */
+  insert_temp_worksheets?: Maybe<Temp_Worksheets_Mutation_Response>;
+  /** insert a single row into the table: "temp_worksheets" */
+  insert_temp_worksheets_one?: Maybe<Temp_Worksheets>;
   /** insert data into the table: "topics" */
   insert_topics?: Maybe<Topics_Mutation_Response>;
   /** insert a single row into the table: "topics" */
@@ -1745,6 +2135,16 @@ export type Mutation_Root = {
   update_completedquestions_by_pk?: Maybe<Completedquestions>;
   /** update multiples rows of table: "completedquestions" */
   update_completedquestions_many?: Maybe<Array<Maybe<Completedquestions_Mutation_Response>>>;
+  /** update data of the table: "custom_answer_imgs" */
+  update_custom_answer_imgs?: Maybe<Custom_Answer_Imgs_Mutation_Response>;
+  /** update single row of the table: "custom_answer_imgs" */
+  update_custom_answer_imgs_by_pk?: Maybe<Custom_Answer_Imgs>;
+  /** update multiples rows of table: "custom_answer_imgs" */
+  update_custom_answer_imgs_many?: Maybe<Array<Maybe<Custom_Answer_Imgs_Mutation_Response>>>;
+  /** update data of the table: "custom_answers_for_worksheets" */
+  update_custom_answers_for_worksheets?: Maybe<Custom_Answers_For_Worksheets_Mutation_Response>;
+  /** update multiples rows of table: "custom_answers_for_worksheets" */
+  update_custom_answers_for_worksheets_many?: Maybe<Array<Maybe<Custom_Answers_For_Worksheets_Mutation_Response>>>;
   /** update data of the table: "levels" */
   update_levels?: Maybe<Levels_Mutation_Response>;
   /** update single row of the table: "levels" */
@@ -1769,6 +2169,14 @@ export type Mutation_Root = {
   update_pendingpayments_by_pk?: Maybe<Pendingpayments>;
   /** update multiples rows of table: "pendingpayments" */
   update_pendingpayments_many?: Maybe<Array<Maybe<Pendingpayments_Mutation_Response>>>;
+  /** update data of the table: "promo_code_redemptions" */
+  update_promo_code_redemptions?: Maybe<Promo_Code_Redemptions_Mutation_Response>;
+  /** update multiples rows of table: "promo_code_redemptions" */
+  update_promo_code_redemptions_many?: Maybe<Array<Maybe<Promo_Code_Redemptions_Mutation_Response>>>;
+  /** update data of the table: "published_worksheets" */
+  update_published_worksheets?: Maybe<Published_Worksheets_Mutation_Response>;
+  /** update multiples rows of table: "published_worksheets" */
+  update_published_worksheets_many?: Maybe<Array<Maybe<Published_Worksheets_Mutation_Response>>>;
   /** update data of the table: "pyps" */
   update_pyps?: Maybe<Pyps_Mutation_Response>;
   /** update single row of the table: "pyps" */
@@ -1841,6 +2249,12 @@ export type Mutation_Root = {
   update_subscriptions_by_pk?: Maybe<Subscriptions>;
   /** update multiples rows of table: "subscriptions" */
   update_subscriptions_many?: Maybe<Array<Maybe<Subscriptions_Mutation_Response>>>;
+  /** update data of the table: "temp_worksheets" */
+  update_temp_worksheets?: Maybe<Temp_Worksheets_Mutation_Response>;
+  /** update single row of the table: "temp_worksheets" */
+  update_temp_worksheets_by_pk?: Maybe<Temp_Worksheets>;
+  /** update multiples rows of table: "temp_worksheets" */
+  update_temp_worksheets_many?: Maybe<Array<Maybe<Temp_Worksheets_Mutation_Response>>>;
   /** update data of the table: "topics" */
   update_topics?: Maybe<Topics_Mutation_Response>;
   /** update single row of the table: "topics" */
@@ -1925,6 +2339,24 @@ export type Mutation_RootDelete_Completedquestions_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Custom_Answer_ImgsArgs = {
+  where: Custom_Answer_Imgs_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Custom_Answer_Imgs_By_PkArgs = {
+  customanswerimgid: Scalars['bigint']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Custom_Answers_For_WorksheetsArgs = {
+  where: Custom_Answers_For_Worksheets_Bool_Exp;
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_LevelsArgs = {
   where: Levels_Bool_Exp;
 };
@@ -1970,6 +2402,18 @@ export type Mutation_RootDelete_PendingpaymentsArgs = {
 export type Mutation_RootDelete_Pendingpayments_By_PkArgs = {
   email: Scalars['String']['input'];
   questionid: Scalars['String']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Promo_Code_RedemptionsArgs = {
+  where: Promo_Code_Redemptions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Published_WorksheetsArgs = {
+  where: Published_Worksheets_Bool_Exp;
 };
 
 
@@ -2123,6 +2567,18 @@ export type Mutation_RootDelete_Subscriptions_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Temp_WorksheetsArgs = {
+  where: Temp_Worksheets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Temp_Worksheets_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_TopicsArgs = {
   where: Topics_Bool_Exp;
 };
@@ -2241,6 +2697,32 @@ export type Mutation_RootInsert_Completedquestions_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Custom_Answer_ImgsArgs = {
+  objects: Array<Custom_Answer_Imgs_Insert_Input>;
+  on_conflict?: InputMaybe<Custom_Answer_Imgs_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Custom_Answer_Imgs_OneArgs = {
+  object: Custom_Answer_Imgs_Insert_Input;
+  on_conflict?: InputMaybe<Custom_Answer_Imgs_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Custom_Answers_For_WorksheetsArgs = {
+  objects: Array<Custom_Answers_For_Worksheets_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Custom_Answers_For_Worksheets_OneArgs = {
+  object: Custom_Answers_For_Worksheets_Insert_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_LevelsArgs = {
   objects: Array<Levels_Insert_Input>;
   on_conflict?: InputMaybe<Levels_On_Conflict>;
@@ -2293,6 +2775,30 @@ export type Mutation_RootInsert_PendingpaymentsArgs = {
 export type Mutation_RootInsert_Pendingpayments_OneArgs = {
   object: Pendingpayments_Insert_Input;
   on_conflict?: InputMaybe<Pendingpayments_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Promo_Code_RedemptionsArgs = {
+  objects: Array<Promo_Code_Redemptions_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Promo_Code_Redemptions_OneArgs = {
+  object: Promo_Code_Redemptions_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Published_WorksheetsArgs = {
+  objects: Array<Published_Worksheets_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Published_Worksheets_OneArgs = {
+  object: Published_Worksheets_Insert_Input;
 };
 
 
@@ -2465,6 +2971,20 @@ export type Mutation_RootInsert_Subscriptions_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Temp_WorksheetsArgs = {
+  objects: Array<Temp_Worksheets_Insert_Input>;
+  on_conflict?: InputMaybe<Temp_Worksheets_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Temp_Worksheets_OneArgs = {
+  object: Temp_Worksheets_Insert_Input;
+  on_conflict?: InputMaybe<Temp_Worksheets_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_TopicsArgs = {
   objects: Array<Topics_Insert_Input>;
   on_conflict?: InputMaybe<Topics_On_Conflict>;
@@ -2621,6 +3141,41 @@ export type Mutation_RootUpdate_Completedquestions_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Custom_Answer_ImgsArgs = {
+  _inc?: InputMaybe<Custom_Answer_Imgs_Inc_Input>;
+  _set?: InputMaybe<Custom_Answer_Imgs_Set_Input>;
+  where: Custom_Answer_Imgs_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Custom_Answer_Imgs_By_PkArgs = {
+  _inc?: InputMaybe<Custom_Answer_Imgs_Inc_Input>;
+  _set?: InputMaybe<Custom_Answer_Imgs_Set_Input>;
+  pk_columns: Custom_Answer_Imgs_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Custom_Answer_Imgs_ManyArgs = {
+  updates: Array<Custom_Answer_Imgs_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Custom_Answers_For_WorksheetsArgs = {
+  _set?: InputMaybe<Custom_Answers_For_Worksheets_Set_Input>;
+  where: Custom_Answers_For_Worksheets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Custom_Answers_For_Worksheets_ManyArgs = {
+  updates: Array<Custom_Answers_For_Worksheets_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_LevelsArgs = {
   _inc?: InputMaybe<Levels_Inc_Input>;
   _set?: InputMaybe<Levels_Set_Input>;
@@ -2701,6 +3256,33 @@ export type Mutation_RootUpdate_Pendingpayments_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Pendingpayments_ManyArgs = {
   updates: Array<Pendingpayments_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Promo_Code_RedemptionsArgs = {
+  _set?: InputMaybe<Promo_Code_Redemptions_Set_Input>;
+  where: Promo_Code_Redemptions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Promo_Code_Redemptions_ManyArgs = {
+  updates: Array<Promo_Code_Redemptions_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Published_WorksheetsArgs = {
+  _inc?: InputMaybe<Published_Worksheets_Inc_Input>;
+  _set?: InputMaybe<Published_Worksheets_Set_Input>;
+  where: Published_Worksheets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Published_Worksheets_ManyArgs = {
+  updates: Array<Published_Worksheets_Updates>;
 };
 
 
@@ -2961,6 +3543,28 @@ export type Mutation_RootUpdate_Subscriptions_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Subscriptions_ManyArgs = {
   updates: Array<Subscriptions_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Temp_WorksheetsArgs = {
+  _inc?: InputMaybe<Temp_Worksheets_Inc_Input>;
+  _set?: InputMaybe<Temp_Worksheets_Set_Input>;
+  where: Temp_Worksheets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Temp_Worksheets_By_PkArgs = {
+  _inc?: InputMaybe<Temp_Worksheets_Inc_Input>;
+  _set?: InputMaybe<Temp_Worksheets_Set_Input>;
+  pk_columns: Temp_Worksheets_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Temp_Worksheets_ManyArgs = {
+  updates: Array<Temp_Worksheets_Updates>;
 };
 
 
@@ -3710,6 +4314,303 @@ export type Pendingpayments_Updates = {
   where: Pendingpayments_Bool_Exp;
 };
 
+/** columns and relationships of "promo_code_redemptions" */
+export type Promo_Code_Redemptions = {
+  __typename?: 'promo_code_redemptions';
+  redeemed_at: Scalars['timestamp']['output'];
+  referee_id: Scalars['String']['output'];
+  referrer_id: Scalars['String']['output'];
+};
+
+/** aggregated selection of "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Aggregate = {
+  __typename?: 'promo_code_redemptions_aggregate';
+  aggregate?: Maybe<Promo_Code_Redemptions_Aggregate_Fields>;
+  nodes: Array<Promo_Code_Redemptions>;
+};
+
+/** aggregate fields of "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Aggregate_Fields = {
+  __typename?: 'promo_code_redemptions_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Promo_Code_Redemptions_Max_Fields>;
+  min?: Maybe<Promo_Code_Redemptions_Min_Fields>;
+};
+
+
+/** aggregate fields of "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Promo_Code_Redemptions_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "promo_code_redemptions". All fields are combined with a logical 'AND'. */
+export type Promo_Code_Redemptions_Bool_Exp = {
+  _and?: InputMaybe<Array<Promo_Code_Redemptions_Bool_Exp>>;
+  _not?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+  _or?: InputMaybe<Array<Promo_Code_Redemptions_Bool_Exp>>;
+  redeemed_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  referee_id?: InputMaybe<String_Comparison_Exp>;
+  referrer_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Insert_Input = {
+  redeemed_at?: InputMaybe<Scalars['timestamp']['input']>;
+  referee_id?: InputMaybe<Scalars['String']['input']>;
+  referrer_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Promo_Code_Redemptions_Max_Fields = {
+  __typename?: 'promo_code_redemptions_max_fields';
+  redeemed_at?: Maybe<Scalars['timestamp']['output']>;
+  referee_id?: Maybe<Scalars['String']['output']>;
+  referrer_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Promo_Code_Redemptions_Min_Fields = {
+  __typename?: 'promo_code_redemptions_min_fields';
+  redeemed_at?: Maybe<Scalars['timestamp']['output']>;
+  referee_id?: Maybe<Scalars['String']['output']>;
+  referrer_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Mutation_Response = {
+  __typename?: 'promo_code_redemptions_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Promo_Code_Redemptions>;
+};
+
+/** Ordering options when selecting data from "promo_code_redemptions". */
+export type Promo_Code_Redemptions_Order_By = {
+  redeemed_at?: InputMaybe<Order_By>;
+  referee_id?: InputMaybe<Order_By>;
+  referrer_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "promo_code_redemptions" */
+export enum Promo_Code_Redemptions_Select_Column {
+  /** column name */
+  RedeemedAt = 'redeemed_at',
+  /** column name */
+  RefereeId = 'referee_id',
+  /** column name */
+  ReferrerId = 'referrer_id'
+}
+
+/** input type for updating data in table "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Set_Input = {
+  redeemed_at?: InputMaybe<Scalars['timestamp']['input']>;
+  referee_id?: InputMaybe<Scalars['String']['input']>;
+  referrer_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "promo_code_redemptions" */
+export type Promo_Code_Redemptions_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Promo_Code_Redemptions_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Promo_Code_Redemptions_Stream_Cursor_Value_Input = {
+  redeemed_at?: InputMaybe<Scalars['timestamp']['input']>;
+  referee_id?: InputMaybe<Scalars['String']['input']>;
+  referrer_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Promo_Code_Redemptions_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Promo_Code_Redemptions_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Promo_Code_Redemptions_Bool_Exp;
+};
+
+/** columns and relationships of "published_worksheets" */
+export type Published_Worksheets = {
+  __typename?: 'published_worksheets';
+  author_id: Scalars['String']['output'];
+  published: Scalars['Boolean']['output'];
+  worksheet_id: Scalars['Int']['output'];
+};
+
+/** aggregated selection of "published_worksheets" */
+export type Published_Worksheets_Aggregate = {
+  __typename?: 'published_worksheets_aggregate';
+  aggregate?: Maybe<Published_Worksheets_Aggregate_Fields>;
+  nodes: Array<Published_Worksheets>;
+};
+
+/** aggregate fields of "published_worksheets" */
+export type Published_Worksheets_Aggregate_Fields = {
+  __typename?: 'published_worksheets_aggregate_fields';
+  avg?: Maybe<Published_Worksheets_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Published_Worksheets_Max_Fields>;
+  min?: Maybe<Published_Worksheets_Min_Fields>;
+  stddev?: Maybe<Published_Worksheets_Stddev_Fields>;
+  stddev_pop?: Maybe<Published_Worksheets_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Published_Worksheets_Stddev_Samp_Fields>;
+  sum?: Maybe<Published_Worksheets_Sum_Fields>;
+  var_pop?: Maybe<Published_Worksheets_Var_Pop_Fields>;
+  var_samp?: Maybe<Published_Worksheets_Var_Samp_Fields>;
+  variance?: Maybe<Published_Worksheets_Variance_Fields>;
+};
+
+
+/** aggregate fields of "published_worksheets" */
+export type Published_Worksheets_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Published_Worksheets_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Published_Worksheets_Avg_Fields = {
+  __typename?: 'published_worksheets_avg_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "published_worksheets". All fields are combined with a logical 'AND'. */
+export type Published_Worksheets_Bool_Exp = {
+  _and?: InputMaybe<Array<Published_Worksheets_Bool_Exp>>;
+  _not?: InputMaybe<Published_Worksheets_Bool_Exp>;
+  _or?: InputMaybe<Array<Published_Worksheets_Bool_Exp>>;
+  author_id?: InputMaybe<String_Comparison_Exp>;
+  published?: InputMaybe<Boolean_Comparison_Exp>;
+  worksheet_id?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** input type for incrementing numeric columns in table "published_worksheets" */
+export type Published_Worksheets_Inc_Input = {
+  worksheet_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "published_worksheets" */
+export type Published_Worksheets_Insert_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  worksheet_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** aggregate max on columns */
+export type Published_Worksheets_Max_Fields = {
+  __typename?: 'published_worksheets_max_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  worksheet_id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** aggregate min on columns */
+export type Published_Worksheets_Min_Fields = {
+  __typename?: 'published_worksheets_min_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  worksheet_id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** response of any mutation on the table "published_worksheets" */
+export type Published_Worksheets_Mutation_Response = {
+  __typename?: 'published_worksheets_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Published_Worksheets>;
+};
+
+/** Ordering options when selecting data from "published_worksheets". */
+export type Published_Worksheets_Order_By = {
+  author_id?: InputMaybe<Order_By>;
+  published?: InputMaybe<Order_By>;
+  worksheet_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "published_worksheets" */
+export enum Published_Worksheets_Select_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  Published = 'published',
+  /** column name */
+  WorksheetId = 'worksheet_id'
+}
+
+/** input type for updating data in table "published_worksheets" */
+export type Published_Worksheets_Set_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  worksheet_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Published_Worksheets_Stddev_Fields = {
+  __typename?: 'published_worksheets_stddev_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Published_Worksheets_Stddev_Pop_Fields = {
+  __typename?: 'published_worksheets_stddev_pop_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Published_Worksheets_Stddev_Samp_Fields = {
+  __typename?: 'published_worksheets_stddev_samp_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "published_worksheets" */
+export type Published_Worksheets_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Published_Worksheets_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Published_Worksheets_Stream_Cursor_Value_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  worksheet_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Published_Worksheets_Sum_Fields = {
+  __typename?: 'published_worksheets_sum_fields';
+  worksheet_id?: Maybe<Scalars['Int']['output']>;
+};
+
+export type Published_Worksheets_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Published_Worksheets_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Published_Worksheets_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Published_Worksheets_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Published_Worksheets_Var_Pop_Fields = {
+  __typename?: 'published_worksheets_var_pop_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Published_Worksheets_Var_Samp_Fields = {
+  __typename?: 'published_worksheets_var_samp_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Published_Worksheets_Variance_Fields = {
+  __typename?: 'published_worksheets_variance_fields';
+  worksheet_id?: Maybe<Scalars['Float']['output']>;
+};
+
 /** columns and relationships of "pyps" */
 export type Pyps = {
   __typename?: 'pyps';
@@ -4038,6 +4939,16 @@ export type Query_Root = {
   completedquestions_aggregate: Completedquestions_Aggregate;
   /** fetch data from the table: "completedquestions" using primary key columns */
   completedquestions_by_pk?: Maybe<Completedquestions>;
+  /** fetch data from the table: "custom_answer_imgs" */
+  custom_answer_imgs: Array<Custom_Answer_Imgs>;
+  /** fetch aggregated fields from the table: "custom_answer_imgs" */
+  custom_answer_imgs_aggregate: Custom_Answer_Imgs_Aggregate;
+  /** fetch data from the table: "custom_answer_imgs" using primary key columns */
+  custom_answer_imgs_by_pk?: Maybe<Custom_Answer_Imgs>;
+  /** fetch data from the table: "custom_answers_for_worksheets" */
+  custom_answers_for_worksheets: Array<Custom_Answers_For_Worksheets>;
+  /** fetch aggregated fields from the table: "custom_answers_for_worksheets" */
+  custom_answers_for_worksheets_aggregate: Custom_Answers_For_Worksheets_Aggregate;
   /** fetch data from the table: "levels" */
   levels: Array<Levels>;
   /** fetch aggregated fields from the table: "levels" */
@@ -4062,6 +4973,14 @@ export type Query_Root = {
   pendingpayments_aggregate: Pendingpayments_Aggregate;
   /** fetch data from the table: "pendingpayments" using primary key columns */
   pendingpayments_by_pk?: Maybe<Pendingpayments>;
+  /** fetch data from the table: "promo_code_redemptions" */
+  promo_code_redemptions: Array<Promo_Code_Redemptions>;
+  /** fetch aggregated fields from the table: "promo_code_redemptions" */
+  promo_code_redemptions_aggregate: Promo_Code_Redemptions_Aggregate;
+  /** fetch data from the table: "published_worksheets" */
+  published_worksheets: Array<Published_Worksheets>;
+  /** fetch aggregated fields from the table: "published_worksheets" */
+  published_worksheets_aggregate: Published_Worksheets_Aggregate;
   /** fetch data from the table: "pyps" */
   pyps: Array<Pyps>;
   /** fetch aggregated fields from the table: "pyps" */
@@ -4134,6 +5053,12 @@ export type Query_Root = {
   subscriptions_aggregate: Subscriptions_Aggregate;
   /** fetch data from the table: "subscriptions" using primary key columns */
   subscriptions_by_pk?: Maybe<Subscriptions>;
+  /** fetch data from the table: "temp_worksheets" */
+  temp_worksheets: Array<Temp_Worksheets>;
+  /** fetch aggregated fields from the table: "temp_worksheets" */
+  temp_worksheets_aggregate: Temp_Worksheets_Aggregate;
+  /** fetch data from the table: "temp_worksheets" using primary key columns */
+  temp_worksheets_by_pk?: Maybe<Temp_Worksheets>;
   /** An array relationship */
   topics: Array<Topics>;
   /** An aggregate relationship */
@@ -4261,6 +5186,47 @@ export type Query_RootCompletedquestions_By_PkArgs = {
 };
 
 
+export type Query_RootCustom_Answer_ImgsArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answer_Imgs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answer_Imgs_Order_By>>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+
+export type Query_RootCustom_Answer_Imgs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answer_Imgs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answer_Imgs_Order_By>>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+
+export type Query_RootCustom_Answer_Imgs_By_PkArgs = {
+  customanswerimgid: Scalars['bigint']['input'];
+};
+
+
+export type Query_RootCustom_Answers_For_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answers_For_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answers_For_Worksheets_Order_By>>;
+  where?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+};
+
+
+export type Query_RootCustom_Answers_For_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answers_For_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answers_For_Worksheets_Order_By>>;
+  where?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+};
+
+
 export type Query_RootLevelsArgs = {
   distinct_on?: InputMaybe<Array<Levels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -4351,6 +5317,42 @@ export type Query_RootPendingpayments_AggregateArgs = {
 export type Query_RootPendingpayments_By_PkArgs = {
   email: Scalars['String']['input'];
   questionid: Scalars['String']['input'];
+};
+
+
+export type Query_RootPromo_Code_RedemptionsArgs = {
+  distinct_on?: InputMaybe<Array<Promo_Code_Redemptions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Promo_Code_Redemptions_Order_By>>;
+  where?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+};
+
+
+export type Query_RootPromo_Code_Redemptions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Promo_Code_Redemptions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Promo_Code_Redemptions_Order_By>>;
+  where?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+};
+
+
+export type Query_RootPublished_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Published_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Published_Worksheets_Order_By>>;
+  where?: InputMaybe<Published_Worksheets_Bool_Exp>;
+};
+
+
+export type Query_RootPublished_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Published_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Published_Worksheets_Order_By>>;
+  where?: InputMaybe<Published_Worksheets_Bool_Exp>;
 };
 
 
@@ -4632,6 +5634,29 @@ export type Query_RootSubscriptions_AggregateArgs = {
 
 export type Query_RootSubscriptions_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootTemp_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Temp_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Temp_Worksheets_Order_By>>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+
+export type Query_RootTemp_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Temp_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Temp_Worksheets_Order_By>>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+
+export type Query_RootTemp_Worksheets_By_PkArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -5053,6 +6078,7 @@ export type Questionimgs = {
   questionimg: Scalars['bytea']['output'];
   questionimgid: Scalars['bigint']['output'];
   questionimgname: Scalars['String']['output'];
+  questionimgocrtext: Scalars['String']['output'];
 };
 
 /** aggregated selection of "questionimgs" */
@@ -5139,6 +6165,7 @@ export type Questionimgs_Bool_Exp = {
   questionimg?: InputMaybe<Bytea_Comparison_Exp>;
   questionimgid?: InputMaybe<Bigint_Comparison_Exp>;
   questionimgname?: InputMaybe<String_Comparison_Exp>;
+  questionimgocrtext?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "questionimgs" */
@@ -5159,6 +6186,7 @@ export type Questionimgs_Insert_Input = {
   questionimg?: InputMaybe<Scalars['bytea']['input']>;
   questionimgid?: InputMaybe<Scalars['bigint']['input']>;
   questionimgname?: InputMaybe<Scalars['String']['input']>;
+  questionimgocrtext?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
@@ -5167,6 +6195,7 @@ export type Questionimgs_Max_Fields = {
   questionid?: Maybe<Scalars['String']['output']>;
   questionimgid?: Maybe<Scalars['bigint']['output']>;
   questionimgname?: Maybe<Scalars['String']['output']>;
+  questionimgocrtext?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by max() on columns of table "questionimgs" */
@@ -5174,6 +6203,7 @@ export type Questionimgs_Max_Order_By = {
   questionid?: InputMaybe<Order_By>;
   questionimgid?: InputMaybe<Order_By>;
   questionimgname?: InputMaybe<Order_By>;
+  questionimgocrtext?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -5182,6 +6212,7 @@ export type Questionimgs_Min_Fields = {
   questionid?: Maybe<Scalars['String']['output']>;
   questionimgid?: Maybe<Scalars['bigint']['output']>;
   questionimgname?: Maybe<Scalars['String']['output']>;
+  questionimgocrtext?: Maybe<Scalars['String']['output']>;
 };
 
 /** order by min() on columns of table "questionimgs" */
@@ -5189,6 +6220,7 @@ export type Questionimgs_Min_Order_By = {
   questionid?: InputMaybe<Order_By>;
   questionimgid?: InputMaybe<Order_By>;
   questionimgname?: InputMaybe<Order_By>;
+  questionimgocrtext?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "questionimgs" */
@@ -5214,6 +6246,7 @@ export type Questionimgs_Order_By = {
   questionimg?: InputMaybe<Order_By>;
   questionimgid?: InputMaybe<Order_By>;
   questionimgname?: InputMaybe<Order_By>;
+  questionimgocrtext?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: questionimgs */
@@ -5230,7 +6263,9 @@ export enum Questionimgs_Select_Column {
   /** column name */
   Questionimgid = 'questionimgid',
   /** column name */
-  Questionimgname = 'questionimgname'
+  Questionimgname = 'questionimgname',
+  /** column name */
+  Questionimgocrtext = 'questionimgocrtext'
 }
 
 /** input type for updating data in table "questionimgs" */
@@ -5239,6 +6274,7 @@ export type Questionimgs_Set_Input = {
   questionimg?: InputMaybe<Scalars['bytea']['input']>;
   questionimgid?: InputMaybe<Scalars['bigint']['input']>;
   questionimgname?: InputMaybe<Scalars['String']['input']>;
+  questionimgocrtext?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -5288,6 +6324,7 @@ export type Questionimgs_Stream_Cursor_Value_Input = {
   questionimg?: InputMaybe<Scalars['bytea']['input']>;
   questionimgid?: InputMaybe<Scalars['bigint']['input']>;
   questionimgname?: InputMaybe<Scalars['String']['input']>;
+  questionimgocrtext?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -5310,7 +6347,9 @@ export enum Questionimgs_Update_Column {
   /** column name */
   Questionimgid = 'questionimgid',
   /** column name */
-  Questionimgname = 'questionimgname'
+  Questionimgname = 'questionimgname',
+  /** column name */
+  Questionimgocrtext = 'questionimgocrtext'
 }
 
 export type Questionimgs_Updates = {
@@ -5384,6 +6423,7 @@ export type Questions = {
   pendingpayments: Array<Pendingpayments>;
   /** An aggregate relationship */
   pendingpayments_aggregate: Pendingpayments_Aggregate;
+  questionParts: Array<Scalars['String']['output']>;
   /** An array relationship */
   question_topics: Array<Question_Topic>;
   /** An aggregate relationship */
@@ -5713,6 +6753,7 @@ export type Questions_Bool_Exp = {
   paperid?: InputMaybe<Bigint_Comparison_Exp>;
   pendingpayments?: InputMaybe<Pendingpayments_Bool_Exp>;
   pendingpayments_aggregate?: InputMaybe<Pendingpayments_Aggregate_Bool_Exp>;
+  questionParts?: InputMaybe<String_Array_Comparison_Exp>;
   question_topics?: InputMaybe<Question_Topic_Bool_Exp>;
   question_topics_aggregate?: InputMaybe<Question_Topic_Aggregate_Bool_Exp>;
   questionimgs?: InputMaybe<Questionimgs_Bool_Exp>;
@@ -5760,6 +6801,7 @@ export type Questions_Insert_Input = {
   paper?: InputMaybe<Papers_Obj_Rel_Insert_Input>;
   paperid?: InputMaybe<Scalars['bigint']['input']>;
   pendingpayments?: InputMaybe<Pendingpayments_Arr_Rel_Insert_Input>;
+  questionParts?: InputMaybe<Array<Scalars['String']['input']>>;
   question_topics?: InputMaybe<Question_Topic_Arr_Rel_Insert_Input>;
   questionimgs?: InputMaybe<Questionimgs_Arr_Rel_Insert_Input>;
   reports?: InputMaybe<Reports_Arr_Rel_Insert_Input>;
@@ -5781,6 +6823,7 @@ export type Questions_Max_Fields = {
   lastmodified?: Maybe<Scalars['timestamp']['output']>;
   levelid?: Maybe<Scalars['bigint']['output']>;
   paperid?: Maybe<Scalars['bigint']['output']>;
+  questionParts?: Maybe<Array<Scalars['String']['output']>>;
   schoolid?: Maybe<Scalars['bigint']['output']>;
 };
 
@@ -5793,6 +6836,7 @@ export type Questions_Max_Order_By = {
   lastmodified?: InputMaybe<Order_By>;
   levelid?: InputMaybe<Order_By>;
   paperid?: InputMaybe<Order_By>;
+  questionParts?: InputMaybe<Order_By>;
   schoolid?: InputMaybe<Order_By>;
 };
 
@@ -5806,6 +6850,7 @@ export type Questions_Min_Fields = {
   lastmodified?: Maybe<Scalars['timestamp']['output']>;
   levelid?: Maybe<Scalars['bigint']['output']>;
   paperid?: Maybe<Scalars['bigint']['output']>;
+  questionParts?: Maybe<Array<Scalars['String']['output']>>;
   schoolid?: Maybe<Scalars['bigint']['output']>;
 };
 
@@ -5818,6 +6863,7 @@ export type Questions_Min_Order_By = {
   lastmodified?: InputMaybe<Order_By>;
   levelid?: InputMaybe<Order_By>;
   paperid?: InputMaybe<Order_By>;
+  questionParts?: InputMaybe<Order_By>;
   schoolid?: InputMaybe<Order_By>;
 };
 
@@ -5860,6 +6906,7 @@ export type Questions_Order_By = {
   paper?: InputMaybe<Papers_Order_By>;
   paperid?: InputMaybe<Order_By>;
   pendingpayments_aggregate?: InputMaybe<Pendingpayments_Aggregate_Order_By>;
+  questionParts?: InputMaybe<Order_By>;
   question_topics_aggregate?: InputMaybe<Question_Topic_Aggregate_Order_By>;
   questionimgs_aggregate?: InputMaybe<Questionimgs_Aggregate_Order_By>;
   reports_aggregate?: InputMaybe<Reports_Aggregate_Order_By>;
@@ -5895,6 +6942,8 @@ export enum Questions_Select_Column {
   /** column name */
   Paperid = 'paperid',
   /** column name */
+  QuestionParts = 'questionParts',
+  /** column name */
   Schoolid = 'schoolid'
 }
 
@@ -5920,6 +6969,7 @@ export type Questions_Set_Input = {
   lastmodified?: InputMaybe<Scalars['timestamp']['input']>;
   levelid?: InputMaybe<Scalars['bigint']['input']>;
   paperid?: InputMaybe<Scalars['bigint']['input']>;
+  questionParts?: InputMaybe<Array<Scalars['String']['input']>>;
   schoolid?: InputMaybe<Scalars['bigint']['input']>;
 };
 
@@ -5992,6 +7042,7 @@ export type Questions_Stream_Cursor_Value_Input = {
   lastmodified?: InputMaybe<Scalars['timestamp']['input']>;
   levelid?: InputMaybe<Scalars['bigint']['input']>;
   paperid?: InputMaybe<Scalars['bigint']['input']>;
+  questionParts?: InputMaybe<Array<Scalars['String']['input']>>;
   schoolid?: InputMaybe<Scalars['bigint']['input']>;
 };
 
@@ -6030,6 +7081,8 @@ export enum Questions_Update_Column {
   Levelid = 'levelid',
   /** column name */
   Paperid = 'paperid',
+  /** column name */
+  QuestionParts = 'questionParts',
   /** column name */
   Schoolid = 'schoolid'
 }
@@ -8135,6 +9188,20 @@ export type Subscription_Root = {
   completedquestions_by_pk?: Maybe<Completedquestions>;
   /** fetch data from the table in a streaming manner: "completedquestions" */
   completedquestions_stream: Array<Completedquestions>;
+  /** fetch data from the table: "custom_answer_imgs" */
+  custom_answer_imgs: Array<Custom_Answer_Imgs>;
+  /** fetch aggregated fields from the table: "custom_answer_imgs" */
+  custom_answer_imgs_aggregate: Custom_Answer_Imgs_Aggregate;
+  /** fetch data from the table: "custom_answer_imgs" using primary key columns */
+  custom_answer_imgs_by_pk?: Maybe<Custom_Answer_Imgs>;
+  /** fetch data from the table in a streaming manner: "custom_answer_imgs" */
+  custom_answer_imgs_stream: Array<Custom_Answer_Imgs>;
+  /** fetch data from the table: "custom_answers_for_worksheets" */
+  custom_answers_for_worksheets: Array<Custom_Answers_For_Worksheets>;
+  /** fetch aggregated fields from the table: "custom_answers_for_worksheets" */
+  custom_answers_for_worksheets_aggregate: Custom_Answers_For_Worksheets_Aggregate;
+  /** fetch data from the table in a streaming manner: "custom_answers_for_worksheets" */
+  custom_answers_for_worksheets_stream: Array<Custom_Answers_For_Worksheets>;
   /** fetch data from the table: "levels" */
   levels: Array<Levels>;
   /** fetch aggregated fields from the table: "levels" */
@@ -8167,6 +9234,18 @@ export type Subscription_Root = {
   pendingpayments_by_pk?: Maybe<Pendingpayments>;
   /** fetch data from the table in a streaming manner: "pendingpayments" */
   pendingpayments_stream: Array<Pendingpayments>;
+  /** fetch data from the table: "promo_code_redemptions" */
+  promo_code_redemptions: Array<Promo_Code_Redemptions>;
+  /** fetch aggregated fields from the table: "promo_code_redemptions" */
+  promo_code_redemptions_aggregate: Promo_Code_Redemptions_Aggregate;
+  /** fetch data from the table in a streaming manner: "promo_code_redemptions" */
+  promo_code_redemptions_stream: Array<Promo_Code_Redemptions>;
+  /** fetch data from the table: "published_worksheets" */
+  published_worksheets: Array<Published_Worksheets>;
+  /** fetch aggregated fields from the table: "published_worksheets" */
+  published_worksheets_aggregate: Published_Worksheets_Aggregate;
+  /** fetch data from the table in a streaming manner: "published_worksheets" */
+  published_worksheets_stream: Array<Published_Worksheets>;
   /** fetch data from the table: "pyps" */
   pyps: Array<Pyps>;
   /** fetch aggregated fields from the table: "pyps" */
@@ -8263,6 +9342,14 @@ export type Subscription_Root = {
   subscriptions_by_pk?: Maybe<Subscriptions>;
   /** fetch data from the table in a streaming manner: "subscriptions" */
   subscriptions_stream: Array<Subscriptions>;
+  /** fetch data from the table: "temp_worksheets" */
+  temp_worksheets: Array<Temp_Worksheets>;
+  /** fetch aggregated fields from the table: "temp_worksheets" */
+  temp_worksheets_aggregate: Temp_Worksheets_Aggregate;
+  /** fetch data from the table: "temp_worksheets" using primary key columns */
+  temp_worksheets_by_pk?: Maybe<Temp_Worksheets>;
+  /** fetch data from the table in a streaming manner: "temp_worksheets" */
+  temp_worksheets_stream: Array<Temp_Worksheets>;
   /** An array relationship */
   topics: Array<Topics>;
   /** An aggregate relationship */
@@ -8428,6 +9515,61 @@ export type Subscription_RootCompletedquestions_StreamArgs = {
 };
 
 
+export type Subscription_RootCustom_Answer_ImgsArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answer_Imgs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answer_Imgs_Order_By>>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+
+export type Subscription_RootCustom_Answer_Imgs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answer_Imgs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answer_Imgs_Order_By>>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+
+export type Subscription_RootCustom_Answer_Imgs_By_PkArgs = {
+  customanswerimgid: Scalars['bigint']['input'];
+};
+
+
+export type Subscription_RootCustom_Answer_Imgs_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Custom_Answer_Imgs_Stream_Cursor_Input>>;
+  where?: InputMaybe<Custom_Answer_Imgs_Bool_Exp>;
+};
+
+
+export type Subscription_RootCustom_Answers_For_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answers_For_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answers_For_Worksheets_Order_By>>;
+  where?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootCustom_Answers_For_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Custom_Answers_For_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Custom_Answers_For_Worksheets_Order_By>>;
+  where?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootCustom_Answers_For_Worksheets_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Custom_Answers_For_Worksheets_Stream_Cursor_Input>>;
+  where?: InputMaybe<Custom_Answers_For_Worksheets_Bool_Exp>;
+};
+
+
 export type Subscription_RootLevelsArgs = {
   distinct_on?: InputMaybe<Array<Levels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8546,6 +9688,56 @@ export type Subscription_RootPendingpayments_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Pendingpayments_Stream_Cursor_Input>>;
   where?: InputMaybe<Pendingpayments_Bool_Exp>;
+};
+
+
+export type Subscription_RootPromo_Code_RedemptionsArgs = {
+  distinct_on?: InputMaybe<Array<Promo_Code_Redemptions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Promo_Code_Redemptions_Order_By>>;
+  where?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+};
+
+
+export type Subscription_RootPromo_Code_Redemptions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Promo_Code_Redemptions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Promo_Code_Redemptions_Order_By>>;
+  where?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+};
+
+
+export type Subscription_RootPromo_Code_Redemptions_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Promo_Code_Redemptions_Stream_Cursor_Input>>;
+  where?: InputMaybe<Promo_Code_Redemptions_Bool_Exp>;
+};
+
+
+export type Subscription_RootPublished_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Published_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Published_Worksheets_Order_By>>;
+  where?: InputMaybe<Published_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootPublished_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Published_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Published_Worksheets_Order_By>>;
+  where?: InputMaybe<Published_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootPublished_Worksheets_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Published_Worksheets_Stream_Cursor_Input>>;
+  where?: InputMaybe<Published_Worksheets_Bool_Exp>;
 };
 
 
@@ -8914,6 +10106,36 @@ export type Subscription_RootSubscriptions_StreamArgs = {
 };
 
 
+export type Subscription_RootTemp_WorksheetsArgs = {
+  distinct_on?: InputMaybe<Array<Temp_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Temp_Worksheets_Order_By>>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootTemp_Worksheets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Temp_Worksheets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Temp_Worksheets_Order_By>>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+
+export type Subscription_RootTemp_Worksheets_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Subscription_RootTemp_Worksheets_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Temp_Worksheets_Stream_Cursor_Input>>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+
 export type Subscription_RootTopicsArgs = {
   distinct_on?: InputMaybe<Array<Topics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9273,6 +10495,207 @@ export type Subscriptions_Updates = {
   _set?: InputMaybe<Subscriptions_Set_Input>;
   /** filter the rows which have to be updated */
   where: Subscriptions_Bool_Exp;
+};
+
+/** columns and relationships of "temp_worksheets" */
+export type Temp_Worksheets = {
+  __typename?: 'temp_worksheets';
+  id: Scalars['Int']['output'];
+  question_ids: Scalars['json']['output'];
+};
+
+
+/** columns and relationships of "temp_worksheets" */
+export type Temp_WorksheetsQuestion_IdsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "temp_worksheets" */
+export type Temp_Worksheets_Aggregate = {
+  __typename?: 'temp_worksheets_aggregate';
+  aggregate?: Maybe<Temp_Worksheets_Aggregate_Fields>;
+  nodes: Array<Temp_Worksheets>;
+};
+
+/** aggregate fields of "temp_worksheets" */
+export type Temp_Worksheets_Aggregate_Fields = {
+  __typename?: 'temp_worksheets_aggregate_fields';
+  avg?: Maybe<Temp_Worksheets_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Temp_Worksheets_Max_Fields>;
+  min?: Maybe<Temp_Worksheets_Min_Fields>;
+  stddev?: Maybe<Temp_Worksheets_Stddev_Fields>;
+  stddev_pop?: Maybe<Temp_Worksheets_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Temp_Worksheets_Stddev_Samp_Fields>;
+  sum?: Maybe<Temp_Worksheets_Sum_Fields>;
+  var_pop?: Maybe<Temp_Worksheets_Var_Pop_Fields>;
+  var_samp?: Maybe<Temp_Worksheets_Var_Samp_Fields>;
+  variance?: Maybe<Temp_Worksheets_Variance_Fields>;
+};
+
+
+/** aggregate fields of "temp_worksheets" */
+export type Temp_Worksheets_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Temp_Worksheets_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Temp_Worksheets_Avg_Fields = {
+  __typename?: 'temp_worksheets_avg_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "temp_worksheets". All fields are combined with a logical 'AND'. */
+export type Temp_Worksheets_Bool_Exp = {
+  _and?: InputMaybe<Array<Temp_Worksheets_Bool_Exp>>;
+  _not?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+  _or?: InputMaybe<Array<Temp_Worksheets_Bool_Exp>>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  question_ids?: InputMaybe<Json_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "temp_worksheets" */
+export enum Temp_Worksheets_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  TempWorksheetsPkey = 'temp_worksheets_pkey'
+}
+
+/** input type for incrementing numeric columns in table "temp_worksheets" */
+export type Temp_Worksheets_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "temp_worksheets" */
+export type Temp_Worksheets_Insert_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  question_ids?: InputMaybe<Scalars['json']['input']>;
+};
+
+/** aggregate max on columns */
+export type Temp_Worksheets_Max_Fields = {
+  __typename?: 'temp_worksheets_max_fields';
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** aggregate min on columns */
+export type Temp_Worksheets_Min_Fields = {
+  __typename?: 'temp_worksheets_min_fields';
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** response of any mutation on the table "temp_worksheets" */
+export type Temp_Worksheets_Mutation_Response = {
+  __typename?: 'temp_worksheets_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Temp_Worksheets>;
+};
+
+/** on_conflict condition type for table "temp_worksheets" */
+export type Temp_Worksheets_On_Conflict = {
+  constraint: Temp_Worksheets_Constraint;
+  update_columns?: Array<Temp_Worksheets_Update_Column>;
+  where?: InputMaybe<Temp_Worksheets_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "temp_worksheets". */
+export type Temp_Worksheets_Order_By = {
+  id?: InputMaybe<Order_By>;
+  question_ids?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: temp_worksheets */
+export type Temp_Worksheets_Pk_Columns_Input = {
+  id: Scalars['Int']['input'];
+};
+
+/** select columns of table "temp_worksheets" */
+export enum Temp_Worksheets_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  QuestionIds = 'question_ids'
+}
+
+/** input type for updating data in table "temp_worksheets" */
+export type Temp_Worksheets_Set_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  question_ids?: InputMaybe<Scalars['json']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Temp_Worksheets_Stddev_Fields = {
+  __typename?: 'temp_worksheets_stddev_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Temp_Worksheets_Stddev_Pop_Fields = {
+  __typename?: 'temp_worksheets_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Temp_Worksheets_Stddev_Samp_Fields = {
+  __typename?: 'temp_worksheets_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "temp_worksheets" */
+export type Temp_Worksheets_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Temp_Worksheets_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Temp_Worksheets_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  question_ids?: InputMaybe<Scalars['json']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Temp_Worksheets_Sum_Fields = {
+  __typename?: 'temp_worksheets_sum_fields';
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** update columns of table "temp_worksheets" */
+export enum Temp_Worksheets_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  QuestionIds = 'question_ids'
+}
+
+export type Temp_Worksheets_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Temp_Worksheets_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Temp_Worksheets_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Temp_Worksheets_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Temp_Worksheets_Var_Pop_Fields = {
+  __typename?: 'temp_worksheets_var_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Temp_Worksheets_Var_Samp_Fields = {
+  __typename?: 'temp_worksheets_var_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Temp_Worksheets_Variance_Fields = {
+  __typename?: 'temp_worksheets_variance_fields';
+  id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -9840,6 +11263,7 @@ export type Users = {
   pendingpayments: Array<Pendingpayments>;
   /** An aggregate relationship */
   pendingpayments_aggregate: Pendingpayments_Aggregate;
+  promo_code?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   questions: Array<Questions>;
   /** An aggregate relationship */
@@ -9850,6 +11274,7 @@ export type Users = {
   savedquestions_aggregate: Savedquestions_Aggregate;
   /** An object relationship */
   subscription?: Maybe<Subscriptions>;
+  token: Scalars['uuid']['output'];
   /** An array relationship */
   upvotes: Array<Upvotes>;
   /** An aggregate relationship */
@@ -10029,11 +11454,13 @@ export type Users_Bool_Exp = {
   last_seen?: InputMaybe<Timestamp_Comparison_Exp>;
   pendingpayments?: InputMaybe<Pendingpayments_Bool_Exp>;
   pendingpayments_aggregate?: InputMaybe<Pendingpayments_Aggregate_Bool_Exp>;
+  promo_code?: InputMaybe<String_Comparison_Exp>;
   questions?: InputMaybe<Questions_Bool_Exp>;
   questions_aggregate?: InputMaybe<Questions_Aggregate_Bool_Exp>;
   savedquestions?: InputMaybe<Savedquestions_Bool_Exp>;
   savedquestions_aggregate?: InputMaybe<Savedquestions_Aggregate_Bool_Exp>;
   subscription?: InputMaybe<Subscriptions_Bool_Exp>;
+  token?: InputMaybe<Uuid_Comparison_Exp>;
   upvotes?: InputMaybe<Upvotes_Bool_Exp>;
   upvotes_aggregate?: InputMaybe<Upvotes_Aggregate_Bool_Exp>;
   worksheets?: InputMaybe<Worksheets_Bool_Exp>;
@@ -10045,7 +11472,11 @@ export enum Users_Constraint {
   /** unique or primary key constraint on columns "id" */
   UsersIdUnique = 'users_id_unique',
   /** unique or primary key constraint on columns "id" */
-  UsersPkey = 'users_pkey'
+  UsersPkey = 'users_pkey',
+  /** unique or primary key constraint on columns "promo_code" */
+  UsersPromoCodeUnique = 'users_promo_code_unique',
+  /** unique or primary key constraint on columns "token" */
+  UsersTokenUnique = 'users_token_unique'
 }
 
 /** input type for incrementing numeric columns in table "users" */
@@ -10061,9 +11492,11 @@ export type Users_Insert_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
   last_seen?: InputMaybe<Scalars['timestamp']['input']>;
   pendingpayments?: InputMaybe<Pendingpayments_Arr_Rel_Insert_Input>;
+  promo_code?: InputMaybe<Scalars['String']['input']>;
   questions?: InputMaybe<Questions_Arr_Rel_Insert_Input>;
   savedquestions?: InputMaybe<Savedquestions_Arr_Rel_Insert_Input>;
   subscription?: InputMaybe<Subscriptions_Obj_Rel_Insert_Input>;
+  token?: InputMaybe<Scalars['uuid']['input']>;
   upvotes?: InputMaybe<Upvotes_Arr_Rel_Insert_Input>;
   worksheets?: InputMaybe<Worksheets_Arr_Rel_Insert_Input>;
 };
@@ -10075,6 +11508,8 @@ export type Users_Max_Fields = {
   free_worksheets_count?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last_seen?: Maybe<Scalars['timestamp']['output']>;
+  promo_code?: Maybe<Scalars['String']['output']>;
+  token?: Maybe<Scalars['uuid']['output']>;
 };
 
 /** aggregate min on columns */
@@ -10084,6 +11519,8 @@ export type Users_Min_Fields = {
   free_worksheets_count?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   last_seen?: Maybe<Scalars['timestamp']['output']>;
+  promo_code?: Maybe<Scalars['String']['output']>;
+  token?: Maybe<Scalars['uuid']['output']>;
 };
 
 /** response of any mutation on the table "users" */
@@ -10117,9 +11554,11 @@ export type Users_Order_By = {
   id?: InputMaybe<Order_By>;
   last_seen?: InputMaybe<Order_By>;
   pendingpayments_aggregate?: InputMaybe<Pendingpayments_Aggregate_Order_By>;
+  promo_code?: InputMaybe<Order_By>;
   questions_aggregate?: InputMaybe<Questions_Aggregate_Order_By>;
   savedquestions_aggregate?: InputMaybe<Savedquestions_Aggregate_Order_By>;
   subscription?: InputMaybe<Subscriptions_Order_By>;
+  token?: InputMaybe<Order_By>;
   upvotes_aggregate?: InputMaybe<Upvotes_Aggregate_Order_By>;
   worksheets_aggregate?: InputMaybe<Worksheets_Aggregate_Order_By>;
 };
@@ -10138,7 +11577,11 @@ export enum Users_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  LastSeen = 'last_seen'
+  LastSeen = 'last_seen',
+  /** column name */
+  PromoCode = 'promo_code',
+  /** column name */
+  Token = 'token'
 }
 
 /** input type for updating data in table "users" */
@@ -10147,6 +11590,8 @@ export type Users_Set_Input = {
   free_worksheets_count?: InputMaybe<Scalars['Int']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   last_seen?: InputMaybe<Scalars['timestamp']['input']>;
+  promo_code?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -10181,6 +11626,8 @@ export type Users_Stream_Cursor_Value_Input = {
   free_worksheets_count?: InputMaybe<Scalars['Int']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   last_seen?: InputMaybe<Scalars['timestamp']['input']>;
+  promo_code?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['uuid']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -10198,7 +11645,11 @@ export enum Users_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  LastSeen = 'last_seen'
+  LastSeen = 'last_seen',
+  /** column name */
+  PromoCode = 'promo_code',
+  /** column name */
+  Token = 'token'
 }
 
 export type Users_Updates = {
@@ -10226,6 +11677,19 @@ export type Users_Var_Samp_Fields = {
 export type Users_Variance_Fields = {
   __typename?: 'users_variance_fields';
   free_worksheets_count?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
+export type Uuid_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['uuid']['input']>;
+  _gt?: InputMaybe<Scalars['uuid']['input']>;
+  _gte?: InputMaybe<Scalars['uuid']['input']>;
+  _in?: InputMaybe<Array<Scalars['uuid']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['uuid']['input']>;
+  _lte?: InputMaybe<Scalars['uuid']['input']>;
+  _neq?: InputMaybe<Scalars['uuid']['input']>;
+  _nin?: InputMaybe<Array<Scalars['uuid']['input']>>;
 };
 
 /** columns and relationships of "worksheets" */
@@ -10885,6 +12349,79 @@ export type Worksheets_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
+export type GetWorksheetByIdQueryVariables = Exact<{
+  worksheetId: Scalars['Int']['input'];
+}>;
+
+
+export type GetWorksheetByIdQuery = { __typename?: 'query_root', worksheets: Array<{ __typename?: 'worksheets', creator?: string | null, questions_order: Array<string> }> };
+
+export type GetQuestionImagesQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type GetQuestionImagesQuery = { __typename?: 'query_root', questions: Array<{ __typename?: 'questions', id: string, answerimgs: Array<{ __typename?: 'answerimgs', answerimgid: any, answerimgname: string }>, questionimgs: Array<{ __typename?: 'questionimgs', questionimgid: any, questionimgname: string }>, paper: { __typename?: 'papers', paper: any } }> };
+
+export type GetPublishedStatusQueryVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  worksheetId: Scalars['Int']['input'];
+}>;
+
+
+export type GetPublishedStatusQuery = { __typename?: 'query_root', published_worksheets: Array<{ __typename?: 'published_worksheets', published: boolean }> };
+
+export type PublishWorksheetMutationVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  worksheetId: Scalars['Int']['input'];
+}>;
+
+
+export type PublishWorksheetMutation = { __typename?: 'mutation_root', insert_published_worksheets?: { __typename?: 'published_worksheets_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'published_worksheets', worksheet_id: number }> } | null };
+
+export type UpdatePublishedStatusMutationVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  worksheetId: Scalars['Int']['input'];
+  published: Scalars['Boolean']['input'];
+}>;
+
+
+export type UpdatePublishedStatusMutation = { __typename?: 'mutation_root', update_published_worksheets?: { __typename?: 'published_worksheets_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'published_worksheets', worksheet_id: number }> } | null };
+
+export type GetCustomAnswerQueryVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  questionId: Scalars['String']['input'];
+}>;
+
+
+export type GetCustomAnswerQuery = { __typename?: 'query_root', custom_answers_for_worksheets: Array<{ __typename?: 'custom_answers_for_worksheets', answer: any }> };
+
+export type InsertCustomAnswerMutationVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  questionId: Scalars['String']['input'];
+  answerJson: Scalars['json']['input'];
+}>;
+
+
+export type InsertCustomAnswerMutation = { __typename?: 'mutation_root', insert_custom_answers_for_worksheets?: { __typename?: 'custom_answers_for_worksheets_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'custom_answers_for_worksheets', question_id: string }> } | null };
+
+export type UpdateCustomAnswerMutationVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  questionId: Scalars['String']['input'];
+  answerJson: Scalars['json']['input'];
+}>;
+
+
+export type UpdateCustomAnswerMutation = { __typename?: 'mutation_root', update_custom_answers_for_worksheets?: { __typename?: 'custom_answers_for_worksheets_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'custom_answers_for_worksheets', question_id: string }> } | null };
+
+export type DeleteCustomAnswerMutationVariables = Exact<{
+  authorId: Scalars['String']['input'];
+  questionId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteCustomAnswerMutation = { __typename?: 'mutation_root', delete_custom_answers_for_worksheets?: { __typename?: 'custom_answers_for_worksheets_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'custom_answers_for_worksheets', question_id: string }> } | null };
+
 export type GetQuestionsByIdQueryVariables = Exact<{
   ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
@@ -11029,6 +12566,15 @@ export type GetUserSubscriptionQueryVariables = Exact<{
 export type GetUserSubscriptionQuery = { __typename?: 'query_root', subscriptions: Array<{ __typename?: 'subscriptions', status: string, current_period_end: any }> };
 
 
+export const GetWorksheetByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetWorksheetById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"creator"}},{"kind":"Field","name":{"kind":"Name","value":"questions_order"}}]}}]}}]} as unknown as DocumentNode<GetWorksheetByIdQuery, GetWorksheetByIdQueryVariables>;
+export const GetQuestionImagesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetQuestionImages"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"answerimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answerimgid"}},{"kind":"Field","name":{"kind":"Name","value":"answerimgname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"questionimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questionimgid"}},{"kind":"Field","name":{"kind":"Name","value":"questionimgname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paper"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paper"}}]}}]}}]}}]} as unknown as DocumentNode<GetQuestionImagesQuery, GetQuestionImagesQueryVariables>;
+export const GetPublishedStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPublishedStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"published_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"worksheet_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"published"}}]}}]}}]} as unknown as DocumentNode<GetPublishedStatusQuery, GetPublishedStatusQueryVariables>;
+export const PublishWorksheetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"PublishWorksheet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_published_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"worksheet_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"published"},"value":{"kind":"BooleanValue","value":true}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"worksheet_id"}}]}}]}}]}}]} as unknown as DocumentNode<PublishWorksheetMutation, PublishWorksheetMutationVariables>;
+export const UpdatePublishedStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePublishedStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"published"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_published_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"worksheet_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"worksheetId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"published"},"value":{"kind":"Variable","name":{"kind":"Name","value":"published"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"worksheet_id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdatePublishedStatusMutation, UpdatePublishedStatusMutationVariables>;
+export const GetCustomAnswerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCustomAnswer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"custom_answers_for_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"question_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answer"}}]}}]}}]} as unknown as DocumentNode<GetCustomAnswerQuery, GetCustomAnswerQueryVariables>;
+export const InsertCustomAnswerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertCustomAnswer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"answerJson"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"json"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_custom_answers_for_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"question_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"answer"},"value":{"kind":"Variable","name":{"kind":"Name","value":"answerJson"}}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"question_id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertCustomAnswerMutation, InsertCustomAnswerMutationVariables>;
+export const UpdateCustomAnswerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCustomAnswer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"answerJson"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"json"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_custom_answers_for_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"question_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"answer"},"value":{"kind":"Variable","name":{"kind":"Name","value":"answerJson"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"question_id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateCustomAnswerMutation, UpdateCustomAnswerMutationVariables>;
+export const DeleteCustomAnswerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCustomAnswer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_custom_answers_for_worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"author_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"authorId"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"question_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questionId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"question_id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteCustomAnswerMutation, DeleteCustomAnswerMutationVariables>;
 export const GetQuestionsByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetQuestionsById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answerimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answerimgname"}},{"kind":"Field","name":{"kind":"Name","value":"answerimgid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"questionimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questionimgname"}},{"kind":"Field","name":{"kind":"Name","value":"questionimgid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"assessment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"assessmentname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"level"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paper"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paper"}}]}},{"kind":"Field","name":{"kind":"Name","value":"school"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"schoolname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"question_topics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topicname"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetQuestionsByIdQuery, GetQuestionsByIdQueryVariables>;
 export const GetFreeWorksheetsLeftDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFreeWorksheetsLeft"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userid"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free_worksheets_count"}}]}}]}}]} as unknown as DocumentNode<GetFreeWorksheetsLeftQuery, GetFreeWorksheetsLeftQueryVariables>;
 export const DecrementFreeWorksheetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DecrementFreeWorksheets"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_users_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userid"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_inc"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"free_worksheets_count"},"value":{"kind":"IntValue","value":"-1"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"free_worksheets_count"}}]}}]}}]} as unknown as DocumentNode<DecrementFreeWorksheetsMutation, DecrementFreeWorksheetsMutationVariables>;

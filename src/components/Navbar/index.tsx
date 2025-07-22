@@ -14,6 +14,7 @@ import posthog from "posthog-js";
 import { useState, useEffect, useRef } from "react";
 import { useSubscription } from "../../hooks/useSubscription.ts";
 import GetRoleSurvey from "../Survey/getRole";
+import WorksheetActions from "../Author/actions.tsx";
 
 export default function Navbar() {
   const { signOut } = useClerk();
@@ -52,56 +53,64 @@ export default function Navbar() {
     setQueryString(localStorage.getItem("questionsSearchParams") || "");
   }, [localStorage.getItem("questionsSearchParams")]);
 
+  const onAuthorPage = location === "/practice/author";
+
   return (
     <div className="sticky top-0 z-10 p-4">
-      <div className="navbar bg-primary rounded-box">
-        <div className="navbar-start flex items-center">
+      <div
+        className={`navbar ${
+          onAuthorPage ? "bg-sky-100" : "bg-primary"
+        } rounded-box`}
+      >
+        <div className="flex items-center navbar-start">
           <Link href={`/practice${queryString ? `?${queryString}` : ""}`}>
-            <div className="text-xl mr-2">Teebloc</div>
+            <div className="mr-2 text-xl">Teebloc</div>
           </Link>
-          <div className="dropdown">
-            <label tabIndex={0} className="m-1 btn btn-ghost">
-              {location.startsWith("/practice") ? "Practice" : "Writing"}
-              <svg
-                className="w-4 h-4 ml-1 fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+          {!onAuthorPage && (
+            <div className="dropdown">
+              <label tabIndex={0} className="m-1 btn btn-ghost">
+                {location.startsWith("/practice") ? "Practice" : "Writing"}
+                <svg
+                  className="w-4 h-4 ml-1 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <a
-                  className={twMerge(
-                    "hover:bg-base-300",
-                    location.startsWith("/practice") ? "bg-base-300" : ""
-                  )}
-                  onClick={() =>
-                    setLocation(
-                      `/practice${queryString ? `?${queryString}` : ""}`
-                    )
-                  }
-                >
-                  Practice
-                </a>
-              </li>
-              <li>
-                <a
-                  className={twMerge(
-                    "hover:bg-base-300",
-                    location.startsWith("/writing") ? "bg-base-300" : ""
-                  )}
-                  onClick={() => setLocation("/writing")}
-                >
-                  Writing
-                </a>
-              </li>
-            </ul>
-          </div>
+                <li>
+                  <a
+                    className={twMerge(
+                      "hover:bg-base-300",
+                      location.startsWith("/practice") ? "bg-base-300" : ""
+                    )}
+                    onClick={() =>
+                      setLocation(
+                        `/practice${queryString ? `?${queryString}` : ""}`
+                      )
+                    }
+                  >
+                    Practice
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={twMerge(
+                      "hover:bg-base-300",
+                      location.startsWith("/writing") ? "bg-base-300" : ""
+                    )}
+                    onClick={() => setLocation("/writing")}
+                  >
+                    Writing
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="relative flex ml-auto sm:hidden" ref={menuRef}>
@@ -129,6 +138,7 @@ export default function Navbar() {
                 location={location}
                 cartItems={cartItems}
                 onSignOut={onSignOut}
+                setLocation={setLocation}
               />
             </div>
           )}
@@ -139,6 +149,7 @@ export default function Navbar() {
             location={location}
             cartItems={cartItems}
             onSignOut={onSignOut}
+            setLocation={setLocation}
           />
         </div>
       </div>
@@ -151,14 +162,21 @@ function NavItems({
   location,
   cartItems,
   onSignOut,
+  setLocation,
 }: {
   location: string;
   cartItems: any[]; // Replace 'any' with the correct type if known
   onSignOut: () => void;
+  setLocation: (value: string) => void;
 }) {
   const { getToken } = useAuth();
   const [writingMatch] = useRoute("/writing");
   const practiceMatch = location.startsWith("/practice");
+  const onAuthorPage = location === "/practice/author";
+  const [executeSave, setExecuteSave] = useState(false);
+  const [executePublish, setExecutePublish] = useState(false);
+  const [isCurrentlyPublished, setIsCurrentlyPublished] = useState(false);
+
   const { hasActiveSubscription, loading } = useSubscription();
   const [isPortalLoading, setIsPortalLoading] = useState(false);
 
@@ -258,97 +276,146 @@ function NavItems({
             showCrossButton={true}
           />
         )}
-        {practiceMatch && (
-          <>
-            <Link href="/practice/worksheets">
-              <div
-                className={`btn btn-outline ${
-                  location === "/practice/worksheets" && "btn-active"
-                }`}
-              >
-                My Worksheets
-              </div>
-            </Link>
-
-            <Link href="/practice/cart">
-              <div
-                className={`btn btn-outline ${
-                  location === "/practice/cart" && "btn-active"
-                }`}
-                onClick={() => {
-                  posthog.capture("worksheet_cart_clicked", {
-                    cartItemsCount: cartItems.length,
-                  });
-                }}
-              >
-                Create Worksheet
-                {cartItems.length > 0 && (
-                  <div className="badge">{cartItems.length}</div>
-                )}
-              </div>
-            </Link>
-
-            {!hasActiveSubscription && !loading && (
-              <Link href="/practice/subscribe">
+        {onAuthorPage ? (
+          <div className="flex flex-row items-center flex-shrink-0 gap-4 mr-2">
+            <WorksheetActions
+              executeSave={executeSave}
+              executePublish={executePublish}
+              isCurrentlyPublished={isCurrentlyPublished}
+              setExecuteSave={setExecuteSave}
+              setExecutePublish={setExecutePublish}
+              setIsCurrentlyPublished={setIsCurrentlyPublished}
+            />
+            <button
+              className="btn btn-primary"
+              onClick={() => setExecutePublish(true)}
+            >
+              {executePublish ? (
+                <>
+                  <span className="loading loading-spinner loading-xs"></span>
+                  {isCurrentlyPublished ? "Unpublishing..." : "Publishing..."}
+                </>
+              ) : (
+                isCurrentlyPublished
+                  ? "Unpublish"
+                  : "Publish"
+              )}
+            </button>
+            <button
+              className="w-36 btn btn-primary"
+              onClick={() => setExecuteSave(true)}
+            >
+              {executeSave ? (
+                <>
+                  <span className="loading loading-spinner loading-xs"></span>
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
+            </button>
+            <button
+              className="w-36 btn btn-primary"
+              onClick={() => setLocation("/practice/worksheets")}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          practiceMatch && (
+            <>
+              <Link href="/practice/worksheets">
                 <div
                   className={`btn btn-outline ${
-                    location === "/practice/subscribe" && "btn-active"
+                    location === "/practice/worksheets" && "btn-active"
                   }`}
                 >
-                  Subscribe
+                  My Worksheets
                 </div>
               </Link>
-            )}
-          </>
-        )}
 
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-outline">
-            Profile
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            {hasActiveSubscription && (
-              <li>
-                <a
-                  onClick={async () => {
-                    if (isPortalLoading) return;
-                    setIsPortalLoading(true);
-                    try {
-                      const response = await authenticatedFetch(
-                        `${
-                          import.meta.env.VITE_BACKEND_API
-                        }/create-portal-session`,
-                        {
-                          method: "POST",
-                        }
-                      );
-                      if (response.url) {
-                        window.location.href = response.url;
-                      }
-                    } finally {
-                      setIsPortalLoading(false);
-                    }
+              <Link href="/practice/cart">
+                <div
+                  className={`btn btn-outline ${
+                    location === "/practice/cart" && "btn-active"
+                  }`}
+                  onClick={() => {
+                    posthog.capture("worksheet_cart_clicked", {
+                      cartItemsCount: cartItems.length,
+                    });
                   }}
                 >
-                  {isPortalLoading ? (
-                    <>
-                      <span className="loading loading-spinner loading-xs"></span>
-                      Loading...
-                    </>
-                  ) : (
-                    "Manage subscription"
+                  Create Worksheet
+                  {cartItems.length > 0 && (
+                    <div className="badge">{cartItems.length}</div>
                   )}
-                </a>
+                </div>
+              </Link>
+
+              {!hasActiveSubscription && !loading && (
+                <Link href="/practice/subscribe">
+                  <div
+                    className={`btn btn-outline ${
+                      location === "/practice/subscribe" && "btn-active"
+                    }`}
+                  >
+                    Subscribe
+                  </div>
+                </Link>
+              )}
+            </>
+          )
+        )}
+
+        {!onAuthorPage && (
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-outline">
+              Profile
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              {hasActiveSubscription && (
+                <li>
+                  <a
+                    onClick={async () => {
+                      if (isPortalLoading) return;
+                      setIsPortalLoading(true);
+                      try {
+                        const response = await authenticatedFetch(
+                          `${
+                            import.meta.env.VITE_BACKEND_API
+                          }/create-portal-session`,
+                          {
+                            method: "POST",
+                          }
+                        );
+                        if (response.url) {
+                          window.location.href = response.url;
+                        }
+                      } finally {
+                        setIsPortalLoading(false);
+                      }
+                    }}
+                  >
+                    {isPortalLoading ? (
+                      <>
+                        <span className="loading loading-spinner loading-xs"></span>
+                        Loading...
+                      </>
+                    ) : (
+                      "Manage subscription"
+                    )}
+                  </a>
+                </li>
+              )}
+              <li>
+                <a onClick={onSignOut}>Sign out</a>
               </li>
-            )}
-            <li>
-              <a onClick={onSignOut}>Sign out</a>
-            </li>
-          </ul>
-        </div>
+            </ul>
+          </div>
+        )}
       </SignedIn>
     </>
   );
