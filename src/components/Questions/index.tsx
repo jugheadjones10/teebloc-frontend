@@ -13,10 +13,14 @@ export type QuestionByIdType = GetQuestionsByIdQuery["questions"][0];
 export default function Questions({
   questions,
   loading,
+  searchIncludedQuestionsLength,
+  searchIncludedQuestionsDisplayCount,
   onLoadMore,
 }: {
   questions: QuestionType[] | QuestionByIdType[];
   loading: boolean;
+  searchIncludedQuestionsLength: number;
+  searchIncludedQuestionsDisplayCount: number;
   onLoadMore: () => void;
 }) {
   const cartItems = useReactiveVar(cartItemsVar);
@@ -88,7 +92,9 @@ export default function Questions({
           />
         ))}
       </div>
-      {questions.length > 0 && (
+      {(searchIncludedQuestionsLength
+        ? searchIncludedQuestionsDisplayCount < searchIncludedQuestionsLength
+        : questions.length > 0) && (
         <button
           className="mb-16 btn btn-primary"
           onClick={onLoadMore}

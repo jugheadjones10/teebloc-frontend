@@ -17,6 +17,7 @@ import posthog from "posthog-js";
 import { useIsAdmin } from "../../hooks/useIsAdmin";
 import { WorksheetsMappingContext } from "../../context/WorksheetsMappingContext";
 import RowSelect from "./rowSelect";
+import SearchSelect from "./searchSelect";
 
 export interface Option {
   readonly value: string;
@@ -159,6 +160,14 @@ export default function Options() {
   );
   const [resetSchools, setResetSchools] = useState(false);
 
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState(
+    useQueryParamsState("search", "")
+  );
+  const [questionIdsFromSearch, setQuestionIdsFromSearch] = useState<string[]>(
+    []
+  );
+
   // Scroll button logic
   useEffect(() => {
     const handleScroll = () => {
@@ -195,6 +204,24 @@ export default function Options() {
   const { data: worksheetsData } = useQuery(GET_USER_WORKSHEETS, {
     variables: { userid: user?.id },
     skip: !user?.id,
+  });
+
+  // Leave PR comment: FetchPolicy set to "network-only" to get around caching issue
+  const { data: allQuestionsData } = useQuery(GET_QUESTIONS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      offset: 0,
+      limit: 1000,
+      topics: topicsChosen.length > 0 ? topicsChosen : topics,
+      levels: specificLevelsChosen,
+      papers: papersChosen.length > 0 ? papersChosen : papersWithoutAll,
+      assessments:
+        assessmentsChosen.length > 0
+          ? assessmentsChosen
+          : assessmentsWithoutAll,
+      schools: schoolsChosen.length > 0 ? schoolsChosen : schools,
+    },
   });
 
   // Exclude questions logic
@@ -238,10 +265,64 @@ export default function Options() {
   const totalQuestions = aggregatesData?.all?.aggregate?.count || 0;
   const totalExcludingUsed = aggregatesData?.excluding?.aggregate?.count || 0;
 
+  const searchIncludedQuestions = useMemo(() => {
+    if (!allQuestionsData || questionIdsFromSearch.length === 0) return [];
+    const res = questionIdsFromSearch
+      .map((id) => allQuestionsData.questions.find((q) => q.id === id))
+      .filter((q) => q !== undefined);
+
+    return excludeUsedQuestions
+      ? res.filter((q) => !usedIDs.includes(q.id))
+      : res;
+  }, [allQuestionsData, questionIdsFromSearch, excludeUsedQuestions, usedIDs]);
+
+  const [
+    searchIncludedQuestionsDisplayCount,
+    setSearchIncludedQuestionsDisplayCount,
+  ] = useState<number>(Math.min(20, searchIncludedQuestions.length));
+
+  useEffect(() => {
+    setSearchIncludedQuestionsDisplayCount(
+      Math.min(20, searchIncludedQuestions.length)
+    );
+    // console.log(searchIncludedQuestions.map((q) => q.id));
+  }, [searchIncludedQuestions]);
+
   // Once you have totalExcludingUsed, you can filter your displayedQuestions
-  const displayedQuestions = excludeUsedQuestions
-    ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
-    : q_data?.questions || [];
+  const [displayedQuestions, setDisplayedQuestions] = useState(
+    excludeUsedQuestions
+      ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
+      : q_data?.questions || []
+  );
+
+  useEffect(() => {
+    if (searchQuery.length > 0 && questionIdsFromSearch.length > 0) {
+      const searchResults = [...searchIncludedQuestions];
+      searchResults.length = Math.max(20, searchIncludedQuestionsDisplayCount);
+      setDisplayedQuestions(searchResults);
+    } else if (
+      topicsChosen.length > 0 &&
+      papersChosen.length > 0 &&
+      assessmentsChosen.length > 0 &&
+      schoolsChosen.length > 0
+    ) {
+      setDisplayedQuestions(
+        excludeUsedQuestions
+          ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
+          : q_data?.questions || []
+      );
+    } else {
+      setDisplayedQuestions([]);
+    }
+  }, [
+    q_data,
+    excludeUsedQuestions,
+    questionIdsFromSearch,
+    subjectChosen,
+    searchQuery,
+    searchIncludedQuestions,
+    searchIncludedQuestionsDisplayCount,
+  ]);
 
   // PDF download logic
   async function downloadPDF() {
@@ -309,6 +390,7 @@ export default function Options() {
       papers: papersChosen,
       assessments: assessmentsChosen,
       schools: schoolsChosen,
+      search: searchQuery ? searchQuery : null,
     });
   }, [
     levelChosen,
@@ -318,6 +400,7 @@ export default function Options() {
     papersChosen,
     assessmentsChosen,
     schoolsChosen,
+    searchQuery,
   ]);
 
   // Use when debugging PDF layout:
@@ -331,6 +414,8 @@ export default function Options() {
   const handleLevelChange = (level: string) => (selected: boolean) => {
     setSpecificLevelsChosen([]);
     setSubjectChosen("");
+    setSearchQuery("");
+    setQuestionIdsFromSearch([]);
     setPapersChosen([]);
     setAssessmentsChosen([]);
     setLevelChosen(selected ? level : "");
@@ -356,6 +441,8 @@ export default function Options() {
         specificLevelsChosen[0] === specificLevel
       ) {
         setSubjectChosen("");
+        setSearchQuery("");
+        setQuestionIdsFromSearch([]);
         setResetSubject(true);
         setResetTopics(true);
         setResetPapers(true);
@@ -366,6 +453,8 @@ export default function Options() {
 
   const handleSubjectChange = (subject: string) => (selected: boolean) => {
     setSubjectChosen(selected ? subject : "");
+    setSearchQuery("");
+    setQuestionIdsFromSearch([]);
     setResetPapers(true);
     setResetTopics(true);
     setResetAssessments(true);
@@ -503,6 +592,13 @@ export default function Options() {
         disabled={subjects.map((s) => specificLevelsChosen.length === 0)}
       />
 
+      <SearchSelect
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        setQuestionIdsFromSearch={setQuestionIdsFromSearch}
+        showCondition={!allLoading && subjectChosen !== ""}
+      />
+
       <RowSelect
         rowLabel="Topics"
         options={topics.map((topic) => ({
@@ -611,7 +707,12 @@ export default function Options() {
       )}
       {q_data && (
         <div>
-          {excludeUsedQuestions ? totalExcludingUsed : totalQuestions} results
+          {searchQuery
+            ? searchIncludedQuestions.length
+            : excludeUsedQuestions
+            ? totalExcludingUsed
+            : totalQuestions}{" "}
+          results
         </div>
       )}
       {isAdmin && (
@@ -643,12 +744,25 @@ export default function Options() {
         <Questions
           questions={displayedQuestions}
           loading={q_loading}
+          searchIncludedQuestionsLength={searchIncludedQuestions.length}
+          searchIncludedQuestionsDisplayCount={
+            searchIncludedQuestionsDisplayCount
+          }
           onLoadMore={() => {
-            fetchMore({
-              variables: {
-                offset: q_data?.questions.length,
-              },
-            });
+            if (searchQuery.length === 0) {
+              fetchMore({
+                variables: {
+                  offset: q_data?.questions.length,
+                },
+              });
+            } else {
+              setSearchIncludedQuestionsDisplayCount(
+                Math.min(
+                  searchIncludedQuestionsDisplayCount + 20,
+                  searchIncludedQuestions.length
+                )
+              );
+            }
           }}
         />
       </WorksheetsMappingContext.Provider>
