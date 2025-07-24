@@ -13,6 +13,8 @@ import { cartItemsVar } from "../CreateWorksheet/data.tsx";
 import posthog from "posthog-js";
 import { useState, useEffect, useRef } from "react";
 import { useSubscription } from "../../hooks/useSubscription.ts";
+import CreateInviteModal from "../Invite/index.tsx";
+import PromoCodeModal from "../Subscribe/modal.tsx";
 import GetRoleSurvey from "../Survey/getRole";
 
 export default function Navbar() {
@@ -161,6 +163,8 @@ function NavItems({
   const practiceMatch = location.startsWith("/practice");
   const { hasActiveSubscription, loading } = useSubscription();
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [openInviteModal, setOpenInviteModal] = useState(false);
+  const [openPromoCodeModal, setOpenPromoCodeModal] = useState(false);
 
   // Modified from https://clerk.com/docs/backend-requests/making/cross-origin
   const authenticatedFetch = async (url: string, options?: RequestInit) => {
@@ -302,6 +306,16 @@ function NavItems({
           </>
         )}
 
+        <CreateInviteModal
+          isOpen={openInviteModal}
+          onClose={() => setOpenInviteModal(false)}
+        />
+
+        <PromoCodeModal
+          isOpen={openPromoCodeModal}
+          onClose={() => setOpenPromoCodeModal(false)}
+        />
+
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-outline">
             Profile
@@ -342,6 +356,19 @@ function NavItems({
                     "Manage subscription"
                   )}
                 </a>
+              </li>
+            )}
+            {hasActiveSubscription ? (
+              <li>
+                <button onClick={() => setOpenPromoCodeModal(true)}>
+                  Refer friend for subscription discount
+                </button>
+              </li>
+            ) : (
+              <li>
+                <button onClick={() => setOpenInviteModal(true)}>
+                  Generate invite link
+                </button>
               </li>
             )}
             <li>
