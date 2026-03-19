@@ -1,11 +1,11 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
+import "dotenv/config";
 
 const config: CodegenConfig = {
   schema: {
-    "https://teebloc.hasura.app/v1/graphql": {
+    [process.env.HASURA_GRAPHQL_URL || "https://teebloc.hasura.app/v1/graphql"]: {
       headers: {
-        "x-hasura-admin-secret":
-          "JYe23B2n2UdEMWcDx2J4oNRfhE46LCC8jNJGug5YAj2Q8DxrEH86QeM9heJzLKja",
+        "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "",
       },
     },
   },

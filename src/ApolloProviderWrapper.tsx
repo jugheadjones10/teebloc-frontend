@@ -56,13 +56,24 @@ export const ApolloProviderWrapper = ({
 
   const apolloClient = useMemo(() => {
     const authMiddleware = setContext(async (req, { headers }) => {
-      // const token = await getToken({ template: "hasura" });
+      const adminSecret = import.meta.env.VITE_X_HASURA_ADMIN_SECRET;
+
+      if (adminSecret) {
+        // Dev: use admin secret
+        return {
+          headers: {
+            ...headers,
+            "x-hasura-admin-secret": adminSecret,
+          },
+        };
+      }
+
+      // Prod: use Clerk JWT
+      const token = await getToken({ template: "hasura" });
       return {
         headers: {
           ...headers,
-          "x-hasura-admin-secret":
-            "JYe23B2n2UdEMWcDx2J4oNRfhE46LCC8jNJGug5YAj2Q8DxrEH86QeM9heJzLKja",
-          // authorization: `Bearer ${token}`,
+          ...(token && { authorization: `Bearer ${token}` }),
         },
       };
     });
@@ -103,7 +114,7 @@ export const ApolloProviderWrapper = ({
                   const homeQs = [];
                   if (existing["home"]) {
                     for (const [key, value] of Object.entries(
-                      existing["home"]
+                      existing["home"],
                     )) {
                       homeQs.push(...(value as any[]));
                     }
