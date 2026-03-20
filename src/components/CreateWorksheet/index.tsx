@@ -143,7 +143,6 @@ export default function CreateWorksheet() {
       const { data: worksheetData } = await createWorksheet({
         variables: {
           name: `Worksheet ${new Date().toLocaleDateString()}`,
-          creator: user.id,
           questions_order: cartItems,
         },
       });
