@@ -7,6 +7,7 @@ import PDFDownloadButton from "./pdfDownloadButton";
 import FilterBar from "./filterBar";
 import { useDeleteWorksheet } from "./helpers";
 import { useSearchParams } from "wouter-search";
+import { useLocation } from "wouter";
 
 const MemoPDFDownloadButton = memo(PDFDownloadButton);
 
@@ -14,6 +15,7 @@ export default function MyWorksheets() {
   const client = useApolloClient();
   const { user } = useUser();
   const isAdmin = useIsAdmin();
+  const [location, setLocation] = useLocation();
 
   const [editingWorksheetId, setEditingWorksheetId] = useState<number | null>(
     null
@@ -246,6 +248,12 @@ export default function MyWorksheets() {
                       Edit name
                     </button>
                   )}
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setLocation(`/author?worksheetId=${w.id}`)}
+                  >
+                    Write custom answers
+                  </button>
                   <MemoPDFDownloadButton worksheet={w} client={client} />
                   <button
                     className="btn btn-error"

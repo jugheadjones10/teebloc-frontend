@@ -10,6 +10,7 @@ import Writing from "./components/writing/Writing";
 import Feedback from "./components/writing/Feedback";
 import Subscribe from "./components/Subscribe";
 import CreateWorksheet from "./components/CreateWorksheet";
+import CustomWorksheetAnswers from "./components/Author";
 import GetRoleSurvey from "./components/Survey/getRole";
 
 function App() {
@@ -66,6 +67,9 @@ function App() {
             </Route>
             <Route path="/subscribe">
               <Subscribe />
+            </Route>
+            <Route path="/author">
+              <CustomWorksheetAnswers />
             </Route>
           </Route>
           <Route path="/writing" nest>
