@@ -2,12 +2,13 @@ import { cartItemsVar } from "../CreateWorksheet/data";
 import { QuestionByIdType, QuestionType } from "../Questions";
 import { useLazyQuestionsQuery } from "../MyWorksheets/helpers";
 import { GET_QUESTIONS_BY_ID } from "../CreateWorksheet/data";
-import { useApolloClient } from "@apollo/client"; // <-- add useLazyQuery
+import { useApolloClient, useReactiveVar } from "@apollo/client"; // <-- add useLazyQuery
 import { useState } from "react";
 import { memo } from "react";
 import posthog from "posthog-js";
 import { Link } from "wouter";
 import Overlay from "./overlay";
+import { MAX_QUESTIONS_FOR_WORKSHEET } from "../Options";
 import { useWorksheetsMapping } from "../../context/WorksheetsMappingContext";
 
 function sortQuestionImages(questionimgs: QuestionType["questionimgs"]) {
@@ -62,6 +63,7 @@ const Question = memo(function Question({
   const worksheets = worksheetsMapping[q.id] || [];
   const [numberOfSimilarQuestionsToShow, setNumberOfSimilarQuestionsToShow] =
     useState<number>(10);
+  const cartItems = useReactiveVar(cartItemsVar);
 
   async function getSimilarQuestions() {
     if (similarQuestionsPressed) return;
@@ -264,18 +266,26 @@ const Question = memo(function Question({
               Remove from worksheet
             </button>
           ) : (
-            <button
-              onClick={() => {
-                cartItemsVar([...cartItemsVar(), q.id]);
-                posthog.capture("question_added_to_worksheet", {
-                  questionId: q.id,
-                  topicNames: q.question_topics.map((qt) => qt.topic.topicname),
-                });
-              }}
-              className="btn btn-primary"
-            >
-              Add to worksheet
-            </button>
+            <fieldset className="fieldset">
+              <button
+                onClick={() => {
+                  cartItemsVar([...cartItemsVar(), q.id]);
+                  posthog.capture("question_added_to_worksheet", {
+                    questionId: q.id,
+                    topicNames: q.question_topics.map((qt) => qt.topic.topicname),
+                  });
+                }}
+                className="btn btn-primary"
+                disabled={cartItems.length >= MAX_QUESTIONS_FOR_WORKSHEET}
+              >
+                Add to worksheet
+              </button>
+              {cartItems.length >= MAX_QUESTIONS_FOR_WORKSHEET && (
+                <span className="label text-red-500 justify-center text-xs">
+                  Max questions reached
+                </span>
+              )}
+            </fieldset>
           )}
         </div>
       </div>

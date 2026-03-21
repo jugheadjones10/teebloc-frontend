@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { useUser } from "@clerk/clerk-react";
 import Questions from "../Questions";
 import {
@@ -17,12 +17,15 @@ import posthog from "posthog-js";
 import { useIsAdmin } from "../../hooks/useIsAdmin";
 import { WorksheetsMappingContext } from "../../context/WorksheetsMappingContext";
 import RowSelect from "./rowSelect";
+import SearchSelect from "./searchSelect";
 
 export interface Option {
   readonly value: string;
   readonly label: string;
 }
 
+export const MAX_QUESTIONS_FOR_WORKSHEET = 30;
+const QUESTIONS_PER_PAGE = 20;
 const levels = {
   Primary: [
     "Primary 1",
@@ -43,7 +46,12 @@ export default function Options() {
   const { data: allData, loading: allLoading } = useQuery(GET_ALL_OPTIONS);
 
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+  const [topXQuestionsToAdd, setTopXQuestionsToAdd] = useState(0);
+  const [mainAddToWorksheetClicked, setMainAddToWorksheetClicked] = useState(false);
+  const [mainAddToWorksheetClickedQueued, setMainAddToWorksheetClickedQueued] = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
+
+  const cartItems = useReactiveVar(cartItemsVar);
 
   const [levelChosen, setLevelChosen] = useState<string>(
     useQueryParamsState("level", "")
@@ -159,6 +167,14 @@ export default function Options() {
   );
   const [resetSchools, setResetSchools] = useState(false);
 
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState(
+    useQueryParamsState("search", "")
+  );
+  const [questionIdsFromSearch, setQuestionIdsFromSearch] = useState<string[]>(
+    []
+  );
+
   // Scroll button logic
   useEffect(() => {
     const handleScroll = () => {
@@ -178,12 +194,11 @@ export default function Options() {
     loading: q_loading,
     error: q_error,
     data: q_data,
-    fetchMore,
   } = useQuery(GET_QUESTIONS, {
     notifyOnNetworkStatusChange: true,
     variables: {
       offset: 0,
-      limit: 20,
+      limit: QUESTIONS_PER_PAGE,
       topics: topicsChosen || [],
       levels: specificLevelsChosen || [],
       papers: papersChosen || [],
@@ -195,6 +210,24 @@ export default function Options() {
   const { data: worksheetsData } = useQuery(GET_USER_WORKSHEETS, {
     variables: { userid: user?.id },
     skip: !user?.id,
+  });
+
+  // Leave PR comment: FetchPolicy set to "network-only" to get around caching issue
+  const { data: allQuestionsData } = useQuery(GET_QUESTIONS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      offset: 0,
+      limit: 1000,
+      topics: topicsChosen.length > 0 ? topicsChosen : topics,
+      levels: specificLevelsChosen,
+      papers: papersChosen.length > 0 ? papersChosen : papersWithoutAll,
+      assessments:
+        assessmentsChosen.length > 0
+          ? assessmentsChosen
+          : assessmentsWithoutAll,
+      schools: schoolsChosen.length > 0 ? schoolsChosen : schools,
+    },
   });
 
   // Exclude questions logic
@@ -238,10 +271,82 @@ export default function Options() {
   const totalQuestions = aggregatesData?.all?.aggregate?.count || 0;
   const totalExcludingUsed = aggregatesData?.excluding?.aggregate?.count || 0;
 
+  const searchIncludedQuestions = useMemo(() => {
+    if (!allQuestionsData || questionIdsFromSearch.length === 0) return [];
+    const res = questionIdsFromSearch
+      .map((id) => allQuestionsData.questions.find((q) => q.id === id))
+      .filter((q) => q !== undefined);
+
+    return excludeUsedQuestions
+      ? res.filter((q) => !usedIDs.includes(q.id))
+      : res;
+  }, [allQuestionsData, questionIdsFromSearch, excludeUsedQuestions, usedIDs]);
+
+  const [
+    searchIncludedQuestionsDisplayCount,
+    setSearchIncludedQuestionsDisplayCount,
+  ] = useState<number>(Math.min(QUESTIONS_PER_PAGE, searchIncludedQuestions.length));
+
+  const [
+    normalQuestionsDisplayCount,
+    setNormalQuestionsDisplayCount,
+  ] = useState<number>(Math.min(QUESTIONS_PER_PAGE, excludeUsedQuestions ? totalExcludingUsed : totalQuestions));
+
+  useEffect(() => {
+    setSearchIncludedQuestionsDisplayCount(
+      Math.min(QUESTIONS_PER_PAGE, searchIncludedQuestions.length)
+    );
+  }, [searchIncludedQuestions]);
+
   // Once you have totalExcludingUsed, you can filter your displayedQuestions
-  const displayedQuestions = excludeUsedQuestions
-    ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
-    : q_data?.questions || [];
+  const [displayedQuestions, setDisplayedQuestions] = useState(
+    excludeUsedQuestions
+      ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
+      : q_data?.questions || []
+  );
+
+  useEffect(() => {
+    if (searchQuery.length > 0 && questionIdsFromSearch.length > 0) {
+      const len = Math.max(QUESTIONS_PER_PAGE, searchIncludedQuestionsDisplayCount);
+      setDisplayedQuestions(searchIncludedQuestions.slice(0, len));
+    } else if (
+      topicsChosen.length > 0 &&
+      papersChosen.length > 0 &&
+      assessmentsChosen.length > 0 &&
+      schoolsChosen.length > 0
+    ) {
+      const filteredQuestions = excludeUsedQuestions
+          ? (q_data?.questions || []).filter((q) => !usedIDs.includes(q.id))
+          : q_data?.questions || [];
+      const len = Math.max(QUESTIONS_PER_PAGE, normalQuestionsDisplayCount);
+      setDisplayedQuestions(filteredQuestions.slice(0, len));
+    } else {
+      setDisplayedQuestions([]);
+    }
+  }, [
+    q_data,
+    excludeUsedQuestions,
+    questionIdsFromSearch,
+    subjectChosen,
+    searchQuery,
+    searchIncludedQuestions,
+    searchIncludedQuestionsDisplayCount,
+    normalQuestionsDisplayCount,
+  ]);
+
+  useEffect(() => {
+    if (mainAddToWorksheetClickedQueued) setMainAddToWorksheetClicked(true);
+    if (mainAddToWorksheetClicked) {
+      const questionIdsToAdd = displayedQuestions
+        .filter((q) => !cartItems.includes(q.id))
+        .map((q) => q.id)
+        .slice(0, topXQuestionsToAdd);
+      const newCartItems = [...cartItems, ...questionIdsToAdd];
+      cartItemsVar(newCartItems);
+      setMainAddToWorksheetClicked(false);
+      setMainAddToWorksheetClickedQueued(false);
+    }
+  }, [displayedQuestions, mainAddToWorksheetClicked, mainAddToWorksheetClickedQueued]);
 
   // PDF download logic
   async function downloadPDF() {
@@ -309,6 +414,7 @@ export default function Options() {
       papers: papersChosen,
       assessments: assessmentsChosen,
       schools: schoolsChosen,
+      search: searchQuery ? searchQuery : null,
     });
   }, [
     levelChosen,
@@ -318,6 +424,7 @@ export default function Options() {
     papersChosen,
     assessmentsChosen,
     schoolsChosen,
+    searchQuery,
   ]);
 
   // Use when debugging PDF layout:
@@ -331,6 +438,8 @@ export default function Options() {
   const handleLevelChange = (level: string) => (selected: boolean) => {
     setSpecificLevelsChosen([]);
     setSubjectChosen("");
+    setSearchQuery("");
+    setQuestionIdsFromSearch([]);
     setPapersChosen([]);
     setAssessmentsChosen([]);
     setLevelChosen(selected ? level : "");
@@ -356,6 +465,8 @@ export default function Options() {
         specificLevelsChosen[0] === specificLevel
       ) {
         setSubjectChosen("");
+        setSearchQuery("");
+        setQuestionIdsFromSearch([]);
         setResetSubject(true);
         setResetTopics(true);
         setResetPapers(true);
@@ -366,6 +477,8 @@ export default function Options() {
 
   const handleSubjectChange = (subject: string) => (selected: boolean) => {
     setSubjectChosen(selected ? subject : "");
+    setSearchQuery("");
+    setQuestionIdsFromSearch([]);
     setResetPapers(true);
     setResetTopics(true);
     setResetAssessments(true);
@@ -503,6 +616,13 @@ export default function Options() {
         disabled={subjects.map((s) => specificLevelsChosen.length === 0)}
       />
 
+      <SearchSelect
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        setQuestionIdsFromSearch={setQuestionIdsFromSearch}
+        showCondition={!allLoading && subjectChosen !== ""}
+      />
+
       <RowSelect
         rowLabel="Topics"
         options={topics.map((topic) => ({
@@ -587,23 +707,82 @@ export default function Options() {
         }}
       />
 
-      <span className="text-xs text-gray-500">
-        All schools are selected by default
-      </span>
+      <div className="flex flex-col gap-0 py-8">
+        {/* Add the toggle switch right after Instructions */}
+        <div className="flex items-center flex-row gap-4">
+          <label className="gap-4 cursor-pointer label">
+            <span>Exclude questions included in my worksheets</span>
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={excludeUsedQuestions}
+              onChange={(e) => setExcludeUsedQuestions(e.target.checked)}
+            />
+          </label>
+        </div>
 
-      {/* Add the toggle switch right after Instructions */}
-      <div className="form-control w-fit">
-        <label className="gap-4 cursor-pointer label">
-          <span className="label-text">
-            Exclude questions included in my worksheets
-          </span>
+        <div className="flex items-center flex-row gap-4">
+          <label>Add top x results to your worksheet:</label>
           <input
-            type="checkbox"
-            className="checkbox"
-            checked={excludeUsedQuestions}
-            onChange={(e) => setExcludeUsedQuestions(e.target.checked)}
+            type="text"
+            className="grow input input-bordered max-w-20 max-h-10"
+            style={{ outline: "none" }}
+            // placeholder="0"
+            min="0"
+            value={topXQuestionsToAdd === 0 ? "" : topXQuestionsToAdd}
+            onChange={(e) => {
+              let value = parseInt(e.target.value, 10);
+              if (isNaN(value) || value < 0) value = 0;
+              setTopXQuestionsToAdd(value);
+            }}
           />
-        </label>
+          <fieldset className="fieldset">
+            <button
+              className="btn btn-neutral"
+              onClick={() => {
+                const existingDisplayedQuestionsInCart = cartItems
+                  .filter((id: string) => displayedQuestions.find((q) => q.id === id))
+                  .length;
+                const totalToAdd = topXQuestionsToAdd + existingDisplayedQuestionsInCart;
+                if (displayedQuestions.length < totalToAdd) {
+                  if (searchQuery.length > 0) setSearchIncludedQuestionsDisplayCount(totalToAdd);
+                  else setNormalQuestionsDisplayCount(totalToAdd);
+                }
+                setMainAddToWorksheetClickedQueued(true);
+              }}
+              disabled={
+                !topXQuestionsToAdd ||
+                cartItems.length + topXQuestionsToAdd >
+                  MAX_QUESTIONS_FOR_WORKSHEET ||
+                topXQuestionsToAdd > (
+                  searchQuery
+                ? searchIncludedQuestions.length
+                : excludeUsedQuestions
+                ? totalExcludingUsed
+                : totalQuestions)
+              }
+            >
+              Add to Worksheet
+            </button>
+            {cartItems.length + topXQuestionsToAdd > MAX_QUESTIONS_FOR_WORKSHEET
+              ? (
+                <span className="absolute label text-red-500 text-xs">
+                  {`You can only add up to ${MAX_QUESTIONS_FOR_WORKSHEET} questions to a worksheet.`}
+                </span>
+              )
+              : topXQuestionsToAdd > (
+                  searchQuery
+                ? searchIncludedQuestions.length
+                : excludeUsedQuestions
+                ? totalExcludingUsed
+                : totalQuestions) && (
+                  <span className="absolute label text-red-500 text-xs">
+                    {`${topXQuestionsToAdd} exceeds number of questions in the result`}
+                  </span>
+                )
+            }
+          </fieldset>
+        </div>
       </div>
 
       {q_loading && (!q_data?.questions || q_data.questions.length === 0) && (
@@ -611,7 +790,12 @@ export default function Options() {
       )}
       {q_data && (
         <div>
-          {excludeUsedQuestions ? totalExcludingUsed : totalQuestions} results
+          {searchQuery
+            ? searchIncludedQuestions.length
+            : excludeUsedQuestions
+            ? totalExcludingUsed
+            : totalQuestions}{" "}
+          results
         </div>
       )}
       {isAdmin && (
@@ -643,12 +827,28 @@ export default function Options() {
         <Questions
           questions={displayedQuestions}
           loading={q_loading}
+          searchIncludedQuestionsLength={searchIncludedQuestions.length}
+          searchIncludedQuestionsDisplayCount={
+            searchIncludedQuestionsDisplayCount
+          }
+          normalQuestionsLength={excludeUsedQuestions ? totalExcludingUsed : totalQuestions}
+          normalQuestionsDisplayCount={normalQuestionsDisplayCount}
           onLoadMore={() => {
-            fetchMore({
-              variables: {
-                offset: q_data?.questions.length,
-              },
-            });
+            if (searchQuery.length === 0) {
+              setNormalQuestionsDisplayCount(
+                Math.min(
+                  normalQuestionsDisplayCount + QUESTIONS_PER_PAGE,
+                  excludeUsedQuestions ? totalExcludingUsed : totalQuestions
+                )
+              );
+            } else {
+              setSearchIncludedQuestionsDisplayCount(
+                Math.min(
+                  searchIncludedQuestionsDisplayCount + QUESTIONS_PER_PAGE,
+                  searchIncludedQuestions.length
+                )
+              );
+            }
           }}
         />
       </WorksheetsMappingContext.Provider>
