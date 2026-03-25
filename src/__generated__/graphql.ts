@@ -1410,6 +1410,10 @@ export type Levels = {
   subject_levels: Array<Subject_Level>;
   /** An aggregate relationship */
   subject_levels_aggregate: Subject_Level_Aggregate;
+  /** An array relationship */
+  topics: Array<Topics>;
+  /** An aggregate relationship */
+  topics_aggregate: Topics_Aggregate;
 };
 
 
@@ -1472,6 +1476,26 @@ export type LevelsSubject_Levels_AggregateArgs = {
   where?: InputMaybe<Subject_Level_Bool_Exp>;
 };
 
+
+/** columns and relationships of "levels" */
+export type LevelsTopicsArgs = {
+  distinct_on?: InputMaybe<Array<Topics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Topics_Order_By>>;
+  where?: InputMaybe<Topics_Bool_Exp>;
+};
+
+
+/** columns and relationships of "levels" */
+export type LevelsTopics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Topics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Topics_Order_By>>;
+  where?: InputMaybe<Topics_Bool_Exp>;
+};
+
 /** aggregated selection of "levels" */
 export type Levels_Aggregate = {
   __typename?: 'levels_aggregate';
@@ -1521,6 +1545,8 @@ export type Levels_Bool_Exp = {
   questions_aggregate?: InputMaybe<Questions_Aggregate_Bool_Exp>;
   subject_levels?: InputMaybe<Subject_Level_Bool_Exp>;
   subject_levels_aggregate?: InputMaybe<Subject_Level_Aggregate_Bool_Exp>;
+  topics?: InputMaybe<Topics_Bool_Exp>;
+  topics_aggregate?: InputMaybe<Topics_Aggregate_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "levels" */
@@ -1543,6 +1569,7 @@ export type Levels_Insert_Input = {
   levelid?: InputMaybe<Scalars['bigint']['input']>;
   questions?: InputMaybe<Questions_Arr_Rel_Insert_Input>;
   subject_levels?: InputMaybe<Subject_Level_Arr_Rel_Insert_Input>;
+  topics?: InputMaybe<Topics_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -1589,6 +1616,7 @@ export type Levels_Order_By = {
   levelid?: InputMaybe<Order_By>;
   questions_aggregate?: InputMaybe<Questions_Aggregate_Order_By>;
   subject_levels_aggregate?: InputMaybe<Subject_Level_Aggregate_Order_By>;
+  topics_aggregate?: InputMaybe<Topics_Aggregate_Order_By>;
 };
 
 /** primary key columns input for table: levels */
@@ -10468,6 +10496,8 @@ export type Timestamp_Comparison_Exp = {
 export type Topics = {
   __typename?: 'topics';
   isstale: Scalars['Boolean']['output'];
+  /** An object relationship */
+  level?: Maybe<Levels>;
   levelid?: Maybe<Scalars['bigint']['output']>;
   /** An array relationship */
   question_topics: Array<Question_Topic>;
@@ -10600,6 +10630,7 @@ export type Topics_Bool_Exp = {
   _not?: InputMaybe<Topics_Bool_Exp>;
   _or?: InputMaybe<Array<Topics_Bool_Exp>>;
   isstale?: InputMaybe<Boolean_Comparison_Exp>;
+  level?: InputMaybe<Levels_Bool_Exp>;
   levelid?: InputMaybe<Bigint_Comparison_Exp>;
   question_topics?: InputMaybe<Question_Topic_Bool_Exp>;
   question_topics_aggregate?: InputMaybe<Question_Topic_Aggregate_Bool_Exp>;
@@ -10627,6 +10658,7 @@ export type Topics_Inc_Input = {
 /** input type for inserting data into table "topics" */
 export type Topics_Insert_Input = {
   isstale?: InputMaybe<Scalars['Boolean']['input']>;
+  level?: InputMaybe<Levels_Obj_Rel_Insert_Input>;
   levelid?: InputMaybe<Scalars['bigint']['input']>;
   question_topics?: InputMaybe<Question_Topic_Arr_Rel_Insert_Input>;
   subject?: InputMaybe<Subjects_Obj_Rel_Insert_Input>;
@@ -10695,6 +10727,7 @@ export type Topics_On_Conflict = {
 /** Ordering options when selecting data from "topics". */
 export type Topics_Order_By = {
   isstale?: InputMaybe<Order_By>;
+  level?: InputMaybe<Levels_Order_By>;
   levelid?: InputMaybe<Order_By>;
   question_topics_aggregate?: InputMaybe<Question_Topic_Aggregate_Order_By>;
   subject?: InputMaybe<Subjects_Order_By>;
@@ -12195,7 +12228,6 @@ export type DecrementFreeWorksheetsMutation = { __typename?: 'mutation_root', up
 export type CreateWorksheetMutationVariables = Exact<{
   name: Scalars['String']['input'];
   questions_order: Array<Scalars['String']['input']> | Scalars['String']['input'];
-  creator: Scalars['String']['input'];
 }>;
 
 
@@ -12322,7 +12354,7 @@ export type GetUserSubscriptionQuery = { __typename?: 'query_root', subscription
 export const GetQuestionsByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetQuestionsById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answerimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"answerimgname"}},{"kind":"Field","name":{"kind":"Name","value":"answerimgid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"questionimgs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questionimgname"}},{"kind":"Field","name":{"kind":"Name","value":"questionimgid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"assessment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"assessmentname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"level"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paper"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paper"}}]}},{"kind":"Field","name":{"kind":"Name","value":"school"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"schoolname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"mcqanswer"}},{"kind":"Field","name":{"kind":"Name","value":"question_topics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topicname"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetQuestionsByIdQuery, GetQuestionsByIdQueryVariables>;
 export const GetFreeWorksheetsLeftDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFreeWorksheetsLeft"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userid"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free_worksheets_count"}}]}}]}}]} as unknown as DocumentNode<GetFreeWorksheetsLeftQuery, GetFreeWorksheetsLeftQueryVariables>;
 export const DecrementFreeWorksheetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DecrementFreeWorksheets"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_users_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userid"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_inc"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"free_worksheets_count"},"value":{"kind":"IntValue","value":"-1"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"free_worksheets_count"}}]}}]}}]} as unknown as DocumentNode<DecrementFreeWorksheetsMutation, DecrementFreeWorksheetsMutationVariables>;
-export const CreateWorksheetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorksheet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questions_order"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"creator"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_worksheets_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"questions_order"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questions_order"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"creator"},"value":{"kind":"Variable","name":{"kind":"Name","value":"creator"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created"}}]}}]}}]} as unknown as DocumentNode<CreateWorksheetMutation, CreateWorksheetMutationVariables>;
+export const CreateWorksheetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorksheet"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questions_order"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_worksheets_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"questions_order"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questions_order"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created"}}]}}]}}]} as unknown as DocumentNode<CreateWorksheetMutation, CreateWorksheetMutationVariables>;
 export const CreateWorksheetQuestionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorksheetQuestions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"worksheets_to_questions_insert_input"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_worksheets_to_questions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}},{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"worksheet_id"}},{"kind":"Field","name":{"kind":"Name","value":"question_id"}}]}}]}}]}}]} as unknown as DocumentNode<CreateWorksheetQuestionsMutation, CreateWorksheetQuestionsMutationVariables>;
 export const GetUserWorksheetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserWorksheets"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"worksheets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"creator"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userid"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"questions_order"}},{"kind":"Field","name":{"kind":"Name","value":"worksheets_to_questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"question_id"}},{"kind":"Field","name":{"kind":"Name","value":"question"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"question_topics"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"topicname"}},{"kind":"Field","name":{"kind":"Name","value":"subject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subject"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"paper"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paper"}}]}},{"kind":"Field","name":{"kind":"Name","value":"level"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"Field","name":{"kind":"Name","value":"assessment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"assessmentname"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetUserWorksheetsQuery, GetUserWorksheetsQueryVariables>;
 export const UpdateWorksheetNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateWorksheetName"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"newName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_worksheets_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"newName"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<UpdateWorksheetNameMutation, UpdateWorksheetNameMutationVariables>;

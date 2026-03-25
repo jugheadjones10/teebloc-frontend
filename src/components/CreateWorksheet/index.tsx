@@ -157,7 +157,6 @@ export default function CreateWorksheet() {
         variables: {
           name: `Worksheet ${new Date().toLocaleDateString()}`,
           questions_order: cartItems,
-          creator: user.id,
         },
       });
 
