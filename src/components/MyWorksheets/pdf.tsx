@@ -8,6 +8,9 @@ import {
 } from "@react-pdf/renderer";
 import { DownloadType } from "./pdfDownloadButton";
 
+// Number of MCQ text answers to show per row in the multi-column grid
+const MCQ_COLUMNS = 5;
+
 // Define styles for the PDF document
 const styles = StyleSheet.create({
   page: {
@@ -59,6 +62,16 @@ const styles = StyleSheet.create({
   answerImage: {
     width: 400,
     marginBottom: 20,
+  },
+  // MCQ text answer styles
+  mcqRow: {
+    flexDirection: "row",
+    marginBottom: 4,
+  },
+  mcqCell: {
+    width: `${100 / MCQ_COLUMNS}%`,
+    fontSize: 30,
+    paddingVertical: 2,
   },
 });
 
@@ -133,42 +146,80 @@ export function PDFDocument({
         <Page size="A4" style={styles.answersPage}>
           <Text style={styles.answersTitle}>Answers</Text>
 
-          {questions.map((question, questionIndex) => (
-            <View key={question.id} style={styles.answerContainer}>
-              {question.answerimgs
-                .sort((a, b) => {
+          {(() => {
+            const elements: React.ReactNode[] = [];
+            let mcqBatch: { index: number; answer: string }[] = [];
+
+            const flushMcqBatch = () => {
+              if (mcqBatch.length === 0) return;
+              const rows: { index: number; answer: string }[][] = [];
+              for (let i = 0; i < mcqBatch.length; i += MCQ_COLUMNS) {
+                rows.push(mcqBatch.slice(i, i + MCQ_COLUMNS));
+              }
+              rows.forEach((row, rowIdx) => (
+                elements.push(
+                  <View key={`mcq-row-${mcqBatch[0].index}-${rowIdx}`} style={styles.mcqRow}>
+                    {row.map((item) => (
+                      <Text key={`mcq-${item.index}`} style={styles.mcqCell}>
+                        {item.index}. ({item.answer})
+                      </Text>
+                    ))}
+                  </View>
+                )
+              ));
+              mcqBatch = [];
+            };
+
+            questions.forEach((question, questionIndex) => {
+              const qNum = questionIndex + 1;
+
+              if (question.answerimgs.length > 0) {
+                flushMcqBatch();
+
+                const sortedAnswerImgs = question.answerimgs.sort((a, b) => {
                   const regex = /Q(\d+)-(\d+)\./;
                   const aMatch = a.answerimgname.match(regex);
                   const bMatch = b.answerimgname.match(regex);
                   if (aMatch && bMatch) {
                     return aMatch[2] - bMatch[2];
-                  } else {
-                    return 0;
                   }
-                })
-                .map((answerImage, index) => (
-                  <View
-                    key={answerImage.answerimgid}
-                    style={styles.answerImageContainer}
-                  >
-                    <Text style={styles.answerNumber}>
-                      {index === 0 ? questionIndex + 1 : ""}
-                    </Text>
-                    <Image
-                      src={`${import.meta.env.VITE_BACKEND_API}/images/answer/${
-                        answerImage.answerimgid
-                      }`}
-                      style={[
-                        styles.answerImage,
-                        {
-                          width: question.paper.paper === 1 ? "40%" : "70%",
-                        },
-                      ]}
-                    />
+                  return 0;
+                });
+
+                elements.push(
+                  <View key={question.id} style={styles.answerContainer}>
+                    {sortedAnswerImgs.map((answerImage, index) => (
+                      <View
+                        key={answerImage.answerimgid}
+                        style={styles.answerImageContainer}
+                      >
+                        <Text style={styles.answerNumber}>
+                          {index === 0 ? qNum : ""}
+                        </Text>
+                        <Image
+                          src={`${import.meta.env.VITE_BACKEND_API}/images/answer/${
+                            answerImage.answerimgid
+                          }`}
+                          style={[
+                            styles.answerImage,
+                            {
+                              width: question.paper.paper === 1 ? "40%" : "70%",
+                            },
+                          ]}
+                        />
+                      </View>
+                    ))}
                   </View>
-                ))}
-            </View>
-          ))}
+                );
+              } else if (question.mcqanswer) {
+                mcqBatch.push({ index: qNum, answer: question.mcqanswer });
+              }
+            });
+
+            flushMcqBatch();
+
+            return elements;
+          })()}
         </Page>
       )}
     </Document>

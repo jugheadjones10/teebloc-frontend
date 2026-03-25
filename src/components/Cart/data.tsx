@@ -75,6 +75,7 @@ query GetQuestionsById($ids: [String!]) {
       schoolname
     }
     id
+    mcqanswer
     question_topics {
       topic {
         topicname

@@ -13,10 +13,13 @@ import { useState } from "react";
 import { PDFDocument } from "../MyWorksheets/pdf";
 import { pdf } from "@react-pdf/renderer";
 import { DownloadType } from "../MyWorksheets/pdfDownloadButton";
+import { useQuestionLimit } from "../../hooks/useQuestionLimit";
+import { showToast } from "../Toast";
 
 export default function Cart() {
   const { user } = useUser();
   const cartItems = useReactiveVar(cartItemsVar);
+  const { maxQuestions, cartCount } = useQuestionLimit();
 
   const {
     loading: q_loading,
@@ -51,6 +54,14 @@ export default function Cart() {
     freeWorksheetsData?.users[0]?.free_worksheets_count || 0;
 
   const handleCheckout = async () => {
+    if (cartItems.length > maxQuestions) {
+      showToast(
+        `Worksheet exceeds the limit of ${maxQuestions} questions. Please remove some questions.`,
+        "warning"
+      );
+      return;
+    }
+
     posthog.capture("user_clicked_checkout");
 
     try {
@@ -110,6 +121,14 @@ export default function Cart() {
   const handleDownload = async () => {
     if (!user?.id || freeWorksheetsLeft <= 0) return;
 
+    if (cartItems.length > maxQuestions) {
+      showToast(
+        `Worksheet exceeds the limit of ${maxQuestions} questions. Please remove some questions.`,
+        "warning"
+      );
+      return;
+    }
+
     try {
       setDownloadLoading(true);
       await downloadPDF();
@@ -144,6 +163,11 @@ export default function Cart() {
         >
           Clear questions
         </div>
+        {maxQuestions !== Infinity && (
+          <div className="text-sm text-gray-600">
+            {cartCount} / {maxQuestions} questions
+          </div>
+        )}
         {freeWorksheetsLeft > 0 ? (
           <div className="flex flex-col">
             <div>({freeWorksheetsLeft} free downloads left)</div>

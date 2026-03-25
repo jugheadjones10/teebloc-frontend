@@ -9,6 +9,8 @@ import posthog from "posthog-js";
 import { Link } from "wouter";
 import Overlay from "./overlay";
 import { useWorksheetsMapping } from "../../context/WorksheetsMappingContext";
+import { useQuestionLimit } from "../../hooks/useQuestionLimit";
+import { showToast } from "../Toast";
 
 function sortQuestionImages(questionimgs: QuestionType["questionimgs"]) {
   const copiedQuestionImages = JSON.parse(JSON.stringify(questionimgs));
@@ -60,6 +62,7 @@ const Question = memo(function Question({
   );
   const worksheetsMapping = useWorksheetsMapping();
   const worksheets = worksheetsMapping[q.id] || [];
+  const { maxQuestions, isAtLimit } = useQuestionLimit();
   const [numberOfSimilarQuestionsToShow, setNumberOfSimilarQuestionsToShow] =
     useState<number>(10);
 
@@ -266,6 +269,15 @@ const Question = memo(function Question({
           ) : (
             <button
               onClick={() => {
+                if (isAtLimit) {
+                  showToast(
+                    maxQuestions === 20
+                      ? "You've reached the limit of 20 questions per worksheet. Subscribe to add up to 50."
+                      : `Maximum of ${maxQuestions} questions per worksheet reached.`,
+                    "warning"
+                  );
+                  return;
+                }
                 cartItemsVar([...cartItemsVar(), q.id]);
                 posthog.capture("question_added_to_worksheet", {
                   questionId: q.id,

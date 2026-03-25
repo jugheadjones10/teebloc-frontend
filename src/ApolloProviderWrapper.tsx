@@ -30,6 +30,7 @@ function destructureArgs(args: any) {
       school: {
         schoolname: { _in: schoolnames },
       },
+      isactive: { _in: isactiveFilter } = { _in: [true] },
     },
     offset,
     limit,
@@ -41,6 +42,7 @@ function destructureArgs(args: any) {
     papers,
     assessmentnames,
     schoolnames,
+    isactiveFilter,
     offset,
     limit,
   };
@@ -168,6 +170,7 @@ export const ApolloProviderWrapper = ({
                       school: {
                         schoolname: { _in: schoolnames },
                       },
+                      isactive: { _in: isactiveFilter } = { _in: [true] },
                     },
                     offset,
                     limit,
@@ -179,6 +182,7 @@ export const ApolloProviderWrapper = ({
                     ...papers,
                     ...assessmentnames,
                     ...schoolnames,
+                    ...(isactiveFilter || [true]),
                   ]);
 
                   return existing?.["home"]?.[key];
@@ -201,6 +205,7 @@ export const ApolloProviderWrapper = ({
                     papers,
                     assessmentnames,
                     schoolnames,
+                    isactiveFilter,
                     offset,
                     limit,
                   } = destructureArgs(args);
@@ -211,6 +216,7 @@ export const ApolloProviderWrapper = ({
                     ...papers,
                     ...assessmentnames,
                     ...schoolnames,
+                    ...(isactiveFilter || [true]),
                   ]);
 
                   const existingCopy = JSON.parse(JSON.stringify(existing));

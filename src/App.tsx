@@ -11,6 +11,7 @@ import Feedback from "./components/writing/Feedback";
 import Subscribe from "./components/Subscribe";
 import CreateWorksheet from "./components/CreateWorksheet";
 import GetRoleSurvey from "./components/Survey/getRole";
+import Toast from "./components/Toast";
 
 function App() {
   const { isSignedIn, user, isLoaded } = useUser();
@@ -30,6 +31,7 @@ function App() {
 
   return (
     <div>
+      <Toast />
       {(isSignedIn || !showSurvey) && <TelegramPromotionBanner />}
       {!isMarkedRoute && (isSignedIn || !showSurvey) && (
         <Navbar

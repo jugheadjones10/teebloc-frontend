@@ -17,9 +17,10 @@ query GetAllOptions {
       }
     }
   }
-  # Get all topics and their associated subjects
-  topics {
+  # Get all non-stale topics and their associated subjects
+  topics(where: {isstale: {_neq: true}}) {
     topicname
+    levelid
     subject {
       subject
     }
@@ -112,7 +113,9 @@ query GetQuestions(
   $levels: [String!], 
   $papers: [bigint!], 
   $assessments: [String!], 
-  $schools: [String!]
+  $schools: [String!],
+  $isactiveFilter: [Boolean!],
+  $mcqanswerFilter: String_comparison_exp
 ) {
   questions_aggregate(
     where: {
@@ -120,7 +123,9 @@ query GetQuestions(
       level: { level: { _in: $levels } },
       paper: { paper: { _in: $papers } },
       assessment: { assessmentname: { _in: $assessments } },
-      school: { schoolname: { _in: $schools } }
+      school: { schoolname: { _in: $schools } },
+      isactive: { _in: $isactiveFilter },
+      mcqanswer: $mcqanswerFilter
     }
   ) {
     aggregate {
@@ -133,7 +138,9 @@ query GetQuestions(
       level: { level: { _in: $levels } },
       paper: { paper: { _in: $papers } },
       assessment: { assessmentname: { _in: $assessments } },
-      school: { schoolname: { _in: $schools } }
+      school: { schoolname: { _in: $schools } },
+      isactive: { _in: $isactiveFilter },
+      mcqanswer: $mcqanswerFilter
     },
     offset: $offset,
     limit: $limit
@@ -159,6 +166,7 @@ query GetQuestions(
       schoolname
     }
     id
+    mcqanswer
     question_topics {
       topic {
         topicname
@@ -175,7 +183,9 @@ export const GET_QUESTION_AGGREGATES = gql(`
     $papers: [bigint!],
     $assessments: [String!],
     $schools: [String!],
-    $excludedIds: [String!]
+    $excludedIds: [String!],
+    $isactiveFilter: [Boolean!],
+    $mcqanswerFilter: String_comparison_exp
   ) {
     all: questions_aggregate(
       where: {
@@ -183,7 +193,9 @@ export const GET_QUESTION_AGGREGATES = gql(`
         level: { level: { _in: $levels } },
         paper: { paper: { _in: $papers } },
         assessment: { assessmentname: { _in: $assessments } },
-        school: { schoolname: { _in: $schools } }
+        school: { schoolname: { _in: $schools } },
+        isactive: { _in: $isactiveFilter },
+        mcqanswer: $mcqanswerFilter
       }
     ) {
       aggregate {
@@ -197,6 +209,8 @@ export const GET_QUESTION_AGGREGATES = gql(`
         paper: { paper: { _in: $papers } },
         assessment: { assessmentname: { _in: $assessments } },
         school: { schoolname: { _in: $schools } },
+        isactive: { _in: $isactiveFilter },
+        mcqanswer: $mcqanswerFilter,
         id: { _nin: $excludedIds }
       }
     ) {

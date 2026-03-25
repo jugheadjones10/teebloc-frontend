@@ -15,6 +15,8 @@ import { useCallback, useState } from "react";
 import { PDFDocument } from "../MyWorksheets/pdf";
 import { pdf } from "@react-pdf/renderer";
 import { useSubscription } from "../../hooks/useSubscription";
+import { useQuestionLimit } from "../../hooks/useQuestionLimit";
+import { showToast } from "../Toast";
 import { Link, useLocation } from "wouter";
 import { useStripeReturn } from "./stripeHook";
 import { GET_USER_WORKSHEETS } from "../MyWorksheets/data";
@@ -30,6 +32,7 @@ export default function CreateWorksheet() {
   const isReorderMode = useReactiveVar(isReorderModeVar);
   const { hasActiveSubscription, loading: subscriptionStateLoading } =
     useSubscription();
+  const { maxQuestions, cartCount } = useQuestionLimit();
 
   const toggleReorderMode = () => {
     isReorderModeVar(!isReorderMode);
@@ -118,6 +121,16 @@ export default function CreateWorksheet() {
       setDownloadLoading(true);
 
       let cartItems = cartItemsVar();
+
+      if (cartItems.length > maxQuestions) {
+        showToast(
+          `Worksheet exceeds the limit of ${maxQuestions} questions. Please remove some questions.`,
+          "warning"
+        );
+        setDownloadLoading(false);
+        return;
+      }
+
       let questions = cartItems.map((id) => {
         return q_data?.questions.find((q) => q.id === id);
       });
@@ -144,6 +157,7 @@ export default function CreateWorksheet() {
         variables: {
           name: `Worksheet ${new Date().toLocaleDateString()}`,
           questions_order: cartItems,
+          creator: user.id,
         },
       });
 
@@ -345,18 +359,29 @@ export default function CreateWorksheet() {
         </div>
       )}
 
-      <div className="fixed z-10 flex flex-row items-end gap-4 bottom-4 right-4">
-        <div
-          onClick={() => {
-            cartItemsVar([]);
-          }}
-          className="btn btn-neutral btn-lg"
-        >
-          Clear questions
+      <div className="fixed z-10 flex flex-col items-end gap-2 bottom-4 right-4">
+        <div className="flex flex-col items-end">
+          {maxQuestions !== Infinity && (
+            <div className="text-sm text-gray-600">
+              {cartCount} / {maxQuestions} questions
+            </div>
+          )}
+          {freeWorksheetsLeft > 0 && (
+            <div className="text-sm text-gray-600">
+              {freeWorksheetsLeft} free downloads left
+            </div>
+          )}
         </div>
-        {freeWorksheetsLeft > 0 ? (
-          <div className="flex flex-col">
-            <div>({freeWorksheetsLeft} free downloads left)</div>
+        <div className="flex flex-row items-center gap-4">
+          <div
+            onClick={() => {
+              cartItemsVar([]);
+            }}
+            className="btn btn-neutral btn-lg"
+          >
+            Clear questions
+          </div>
+          {freeWorksheetsLeft > 0 ? (
             <button
               onClick={handleDownload}
               className={twMerge(
@@ -370,29 +395,29 @@ export default function CreateWorksheet() {
                 "Download"
               )}
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              if (!subscriptionStateLoading && hasActiveSubscription) {
-                handleDownload();
-              }
-            }}
-            disabled={subscriptionStateLoading}
-            className={twMerge(
-              "btn btn-neutral btn-lg w-56",
-              !hasActiveSubscription && "btn-outline "
-            )}
-          >
-            {subscriptionStateLoading || downloadLoading ? (
-              <span className="loading loading-spinner"></span>
-            ) : hasActiveSubscription ? (
-              "Create worksheet"
-            ) : (
-              <Link href="/subscribe">Subscribe to create worksheet</Link>
-            )}
-          </button>
-        )}
+          ) : (
+            <button
+              onClick={() => {
+                if (!subscriptionStateLoading && hasActiveSubscription) {
+                  handleDownload();
+                }
+              }}
+              disabled={subscriptionStateLoading}
+              className={twMerge(
+                "btn btn-neutral btn-lg w-56",
+                !hasActiveSubscription && "btn-outline "
+              )}
+            >
+              {subscriptionStateLoading || downloadLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : hasActiveSubscription ? (
+                "Create worksheet"
+              ) : (
+                <Link href="/subscribe">Subscribe to create worksheet</Link>
+              )}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

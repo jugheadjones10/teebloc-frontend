@@ -44,7 +44,6 @@ export default function RowSelect({
   options,
   showCondition = true,
   multiselect = false,
-  hasAllOption = false,
   allLoading = false,
   reset = false,
   setReset = () => {},
@@ -54,12 +53,12 @@ export default function RowSelect({
   rowLabel: string;
   options: {
     label: string;
+    value?: string;
     onChange: (selected: boolean) => void;
     preselected: boolean;
   }[];
   showCondition?: boolean;
   multiselect?: boolean;
-  hasAllOption?: boolean;
   allLoading?: boolean;
   reset?: boolean;
   setReset?: (value: boolean) => void;
@@ -92,14 +91,6 @@ export default function RowSelect({
       const newStates = multiselect
         ? [...prevStates]
         : options.map(() => false);
-      if (hasAllOption) {
-        if (index !== 0) {
-          newStates[0] = false;
-        } else {
-          newStates.fill(false);
-          newStates[index] = true;
-        }
-      }
       newStates[index] = !prevStates[index];
       options[index].onChange(newStates[index]);
       return newStates;
@@ -142,7 +133,7 @@ export default function RowSelect({
               }}
               options={options.map((option) => ({
                 label: option.label,
-                value: option.label,
+                value: option.value ?? option.label,
               }))}
             />
           ) : (
