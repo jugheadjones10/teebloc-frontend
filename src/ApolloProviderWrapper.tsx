@@ -10,6 +10,13 @@ import { useAuth } from "@clerk/clerk-react";
 import { useMemo, useEffect, useState } from "react";
 import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 
+function toArray(v: any): any[] {
+  if (Array.isArray(v)) return v;
+  if (typeof v === "string") return v === "" ? [] : [v];
+  if (v && typeof v === "object") return Object.values(v);
+  return [];
+}
+
 function destructureArgs(args: any) {
   const {
     where: {
@@ -177,16 +184,16 @@ export const ApolloProviderWrapper = ({
                     limit,
                   } = args;
 
-                  const key = JSON.stringify([
-                    ...(topicnames || []),
-                    ...(levels || []),
-                    ...(papers || []),
-                    ...(assessmentnames || []),
-                    ...(schoolnames || []),
-                    ...(isactiveFilter || [true]),
-                  ]);
+                   const key = JSON.stringify([
+                     ...toArray(topicnames),
+                     ...toArray(levels),
+                     ...toArray(papers),
+                     ...toArray(assessmentnames),
+                     ...toArray(schoolnames),
+                     ...toArray(isactiveFilter),
+                   ]);
 
-                  return existing?.["home"]?.[key];
+                   return existing?.["home"]?.[key];
                 }
 
                 return undefined;
@@ -212,16 +219,16 @@ export const ApolloProviderWrapper = ({
                     limit,
                   } = destructureArgs(args);
 
-                  const key = JSON.stringify([
-                    ...(topicnames || []),
-                    ...(levels || []),
-                    ...(papers || []),
-                    ...(assessmentnames || []),
-                    ...(schoolnames || []),
-                    ...(isactiveFilter || [true]),
-                  ]);
+                   const key = JSON.stringify([
+                     ...toArray(topicnames),
+                     ...toArray(levels),
+                     ...toArray(papers),
+                     ...toArray(assessmentnames),
+                     ...toArray(schoolnames),
+                     ...toArray(isactiveFilter),
+                   ]);
 
-                  const existingCopy = JSON.parse(JSON.stringify(existing));
+                   const existingCopy = JSON.parse(JSON.stringify(existing));
 
                   existingCopy["home"] ??= {};
                   existingCopy["home"][key] ??= [];

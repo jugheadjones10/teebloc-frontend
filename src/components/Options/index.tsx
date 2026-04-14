@@ -24,6 +24,13 @@ export interface Option {
   readonly label: string;
 }
 
+function toArray(v: unknown): string[] {
+  if (Array.isArray(v)) return v;
+  if (typeof v === "string") return v === "" ? [] : [v];
+  if (v && typeof v === "object") return Object.values(v);
+  return [];
+}
+
 const levels = {
   Primary: [
     "Primary 3",
@@ -65,7 +72,7 @@ export default function Options() {
   const [resetSpecificLevels, setResetSpecificLevels] = useState(false);
 
   const cumulativeQueryLevels = useMemo(() => {
-    const chosen = specificLevelsChosen || [];
+    const chosen = toArray(specificLevelsChosen);
     const hasS2 = chosen.includes("Secondary 2");
     if (!hasS2) return chosen;
 
@@ -78,7 +85,7 @@ export default function Options() {
       allData?.subjects
         .filter((subject) =>
           subject.subject_levels.some((sl) =>
-            (specificLevelsChosen || []).includes(sl.level.level),
+            toArray(specificLevelsChosen).includes(sl.level.level),
           ),
         )
         .map((s) => s.subject) || [],
@@ -112,7 +119,7 @@ export default function Options() {
     // Cumulative filtering for subjects with levelid-tagged topics (e.g. Primary Science)
     const hasLevelIds = filtered.some((t) => t.levelid != null);
 
-    if (hasLevelIds && specificLevelsChosen.length > 0) {
+    if (hasLevelIds && toArray(specificLevelsChosen).length > 0) {
       const selectedPrimaryNumbers = specificLevelsChosen
         .filter((l) => l.startsWith("Primary"))
         .map((l) => parseInt(l.split(" ")[1]));
@@ -173,10 +180,10 @@ export default function Options() {
 
   // Prune selected topics that are no longer valid after level changes
   useEffect(() => {
-    if (topicsChosen.length > 0 && topics.length > 0) {
+    if (toArray(topicsChosen).length > 0 && topics.length > 0) {
       const validValues = new Set(topics.map((t) => t.value));
-      const validTopics = topicsChosen.filter((t) => validValues.has(t));
-      if (validTopics.length !== topicsChosen.length) {
+      const validTopics = toArray(topicsChosen).filter((t) => validValues.has(t));
+      if (validTopics.length !== toArray(topicsChosen).length) {
         setTopicsChosen(validTopics);
       }
     }
@@ -211,7 +218,7 @@ export default function Options() {
       allData?.assessments
         .filter((assessment) =>
           assessment.assessment_levels.some((al) =>
-            (specificLevelsChosen || []).includes(al.level.level),
+            toArray(specificLevelsChosen).includes(al.level.level),
           ),
         )
         .sort((a: any, b: any) =>
@@ -273,11 +280,11 @@ export default function Options() {
     variables: {
       offset: 0,
       limit: 20,
-      topics: topicsChosen || [],
+      topics: toArray(topicsChosen),
       levels: cumulativeQueryLevels,
-      papers: papersChosen || [],
-      assessments: assessmentsChosen || [],
-      schools: schoolsChosen || [],
+      papers: toArray(papersChosen),
+      assessments: toArray(assessmentsChosen),
+      schools: toArray(schoolsChosen),
       isactiveFilter,
       mcqanswerFilter,
     },
@@ -321,11 +328,11 @@ export default function Options() {
     GET_QUESTION_AGGREGATES,
     {
       variables: {
-        topics: topicsChosen || [],
+        topics: toArray(topicsChosen),
         levels: cumulativeQueryLevels,
-        papers: papersChosen || [],
-        assessments: assessmentsChosen || [],
-        schools: schoolsChosen || [],
+        papers: toArray(papersChosen),
+        assessments: toArray(assessmentsChosen),
+        schools: toArray(schoolsChosen),
         excludedIds: usedIDs,
         isactiveFilter,
         mcqanswerFilter,
@@ -410,7 +417,7 @@ export default function Options() {
   }
 
   const allOptionsSelected =
-    specificLevelsChosen.length > 0 &&
+    toArray(specificLevelsChosen).length > 0 &&
     subjectChosen &&
     topicsChosen.length > 0 &&
     questionTypesChosen.length > 0 &&
@@ -468,16 +475,17 @@ export default function Options() {
 
   const handleSpecificLevelChange =
     (specificLevel: string) => (selected: boolean) => {
+      const current = toArray(specificLevelsChosen);
       if (selected) {
-        setSpecificLevelsChosen([...specificLevelsChosen, specificLevel]);
+        setSpecificLevelsChosen([...current, specificLevel]);
       } else {
         setSpecificLevelsChosen(
-          specificLevelsChosen.filter((level) => level !== specificLevel),
+          current.filter((level) => level !== specificLevel),
         );
       }
       if (
-        specificLevelsChosen.length === 1 &&
-        specificLevelsChosen[0] === specificLevel
+        current.length === 1 &&
+        current[0] === specificLevel
       ) {
         setSubjectChosen("");
         setResetSubject(true);
@@ -538,8 +546,8 @@ export default function Options() {
 
   const handleQuestionTypeChange = (type: string) => (selected: boolean) => {
     const newTypes = selected
-      ? [...questionTypesChosen, type]
-      : questionTypesChosen.filter((t) => t !== type);
+      ? [...toArray(questionTypesChosen), type]
+      : toArray(questionTypesChosen).filter((t) => t !== type);
     setQuestionTypesChosen(newTypes);
 
     // Paper constraint: MCQ only → lock to Paper 1, otherwise reset to all
@@ -554,18 +562,18 @@ export default function Options() {
 
   const handlePaperChange = (paper: string) => (selected: boolean) => {
     if (selected) {
-      setPapersChosen([...papersChosen, paper]);
+      setPapersChosen([...toArray(papersChosen), paper]);
     } else {
-      setPapersChosen(papersChosen.filter((p) => p !== paper));
+      setPapersChosen(toArray(papersChosen).filter((p) => p !== paper));
     }
   };
 
   const handleAssessmentChange =
     (assessment: string) => (selected: boolean) => {
       if (selected) {
-        setAssessmentsChosen([...assessmentsChosen, assessment]);
+        setAssessmentsChosen([...toArray(assessmentsChosen), assessment]);
       } else {
-        setAssessmentsChosen(assessmentsChosen.filter((a) => a !== assessment));
+        setAssessmentsChosen(toArray(assessmentsChosen).filter((a) => a !== assessment));
       }
     };
 
@@ -598,7 +606,7 @@ export default function Options() {
             .map((word) => word[0])
             .join(""),
           onChange: handleSpecificLevelChange(level),
-          preselected: specificLevelsChosen.includes(level),
+          preselected: toArray(specificLevelsChosen).includes(level),
         }))}
         multiselect={true}
         showCondition={!allLoading}
@@ -624,7 +632,7 @@ export default function Options() {
         allLoading={allLoading}
         reset={resetSubject}
         setReset={setResetSubject}
-        disabled={subjects.map((s) => specificLevelsChosen.length === 0)}
+        disabled={subjects.map((s) => toArray(specificLevelsChosen).length === 0)}
       />
 
       <RowSelect
@@ -633,7 +641,7 @@ export default function Options() {
           label: topic.label,
           value: topic.value,
           onChange: handleTopicChange(topic.value),
-          preselected: topicsChosen.includes(topic.value),
+          preselected: toArray(topicsChosen).includes(topic.value),
         }))}
         multiselect={true}
         showCondition={!allLoading && subjectChosen !== ""}
@@ -641,7 +649,7 @@ export default function Options() {
         reset={resetTopics}
         setReset={setResetTopics}
         useCustomSelect={{
-          selectedValues: topicsChosen.map((t) => {
+          selectedValues: toArray(topicsChosen).map((t) => {
             const match = topics.find((topic) => topic.value === t);
             return { label: match?.label ?? t, value: t };
           }),
@@ -655,7 +663,7 @@ export default function Options() {
         options={questionTypes.map((type) => ({
           label: type,
           onChange: handleQuestionTypeChange(type),
-          preselected: questionTypesChosen.includes(type),
+          preselected: toArray(questionTypesChosen).includes(type),
         }))}
         showCondition={!allLoading && subjectChosen !== ""}
         multiselect={true}
@@ -683,7 +691,7 @@ export default function Options() {
             options={papers.map((paper) => ({
               label: `Paper ${paper}`,
               onChange: handlePaperChange(paper),
-              preselected: papersChosen.includes(paper),
+              preselected: toArray(papersChosen).includes(paper),
             }))}
             showCondition={!allLoading && subjectChosen !== ""}
             multiselect={true}
@@ -705,7 +713,7 @@ export default function Options() {
             options={assessments.map((assessment) => ({
               label: assessment,
               onChange: handleAssessmentChange(assessment),
-              preselected: assessmentsChosen.includes(assessment),
+              preselected: toArray(assessmentsChosen).includes(assessment),
             }))}
             showCondition={!allLoading && subjectChosen !== ""}
             multiselect={true}
@@ -721,7 +729,7 @@ export default function Options() {
               schools.map((school) => ({
                 label: school,
                 onChange: (selected: boolean) => {},
-                preselected: schoolsChosen.includes(school),
+                preselected: toArray(schoolsChosen).includes(school),
               })) || []
             }
             showCondition={!allLoading && subjectChosen !== ""}
@@ -730,7 +738,7 @@ export default function Options() {
             allLoading={allLoading}
             setReset={setResetSchools}
             useCustomSelect={{
-              selectedValues: schoolsChosen.map((s) => ({
+              selectedValues: toArray(schoolsChosen).map((s) => ({
                 label: s,
                 value: s,
               })),

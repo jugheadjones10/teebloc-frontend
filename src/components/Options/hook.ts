@@ -35,22 +35,30 @@ export const useQueryParamsState = (query: string, initialValue: any) => {
   }, []);
 
   const parsedValue = useMemo(() => {
-    // From the qs docs:
-    // qs will also limit specifying indices in an array to a maximum index of 20.
-    // Any array members with an index of greater than 20 will instead be converted to an object with the index as the key.
-    // This is needed to handle cases when someone sent, for example, a[999999999] and it will take significant time to iterate over this huge array.
     const parsed = qs.parse(searchParams, {
       ignoreQueryPrefix: true,
-      arrayLimit: 100,
+      arrayLimit: 1000,
     });
-    const value = parsed[query] || initialValue;
-    // qs.parse can return a string for single-element arrays (e.g. specificLevels[0]=Secondary 2).
-    // When the caller expects an array (initialValue is []), coerce to array to prevent
-    // ".includes is not a function" errors downstream.
-    if (Array.isArray(initialValue) && !Array.isArray(value)) {
-      return [value];
+    const raw = parsed[query] ?? initialValue;
+
+    if (Array.isArray(initialValue)) {
+      if (Array.isArray(raw)) return raw;
+      if (typeof raw === "string") return raw === "" ? initialValue : [raw];
+      if (raw && typeof raw === "object") return Object.values(raw);
+      return initialValue;
     }
-    return value;
+
+    if (typeof initialValue === "string") {
+      if (typeof raw === "string") return raw;
+      if (Array.isArray(raw)) return raw[0] ?? initialValue;
+      if (raw && typeof raw === "object") {
+        const first = Object.values(raw)[0];
+        return typeof first === "string" ? first : initialValue;
+      }
+      return initialValue;
+    }
+
+    return raw;
   }, [searchParams, query]);
 
   // If value is an array, return an array of objects with value and label. If not, just return one <object data="
