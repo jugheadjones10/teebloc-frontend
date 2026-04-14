@@ -218,14 +218,14 @@ export default function Options() {
       allData?.assessments
         .filter((assessment) =>
           assessment.assessment_levels.some((al) =>
-            toArray(specificLevelsChosen).includes(al.level.level),
+            toArray(cumulativeQueryLevels).includes(al.level.level),
           ),
         )
         .sort((a: any, b: any) =>
           a.assessmentname < b.assessmentname ? -1 : 1,
         )
         .map((a) => a.assessmentname) || [],
-    [allData, specificLevelsChosen],
+    [allData, cumulativeQueryLevels],
   );
   const [assessmentsChosen, setAssessmentsChosen] = useState<string[]>(
     useQueryParamsState("assessments", []),
