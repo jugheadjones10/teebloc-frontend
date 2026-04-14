@@ -111,7 +111,8 @@ export const ApolloProviderWrapper = ({
               keyArgs: false,
               read(existing, { args, readField }) {
                 if (!args) return undefined;
-                if (args.where.id && existing) {
+                try {
+                  if (args.where.id && existing) {
                   const ids = args.where.id._in;
                   const homeQs = [];
                   if (existing["home"]) {
@@ -188,9 +189,10 @@ export const ApolloProviderWrapper = ({
                   return existing?.["home"]?.[key];
                 }
 
-                // If we return an empty array instead of undefined, Apollo will
-                // think the data exists in the cache and will not make a network request.
                 return undefined;
+                } catch {
+                  return undefined;
+                }
               },
               merge(existing = {}, incoming, { args, readField }) {
                 if (!args) return existing;
@@ -268,6 +270,8 @@ export const ApolloProviderWrapper = ({
   useEffect(() => {
     const initializeCache = async () => {
       try {
+        localStorage.removeItem("teebloc-apollo-cache");
+
         await persistCache({
           cache: apolloClient.cache,
           storage: new LocalStorageWrapper(window.localStorage),
@@ -279,7 +283,8 @@ export const ApolloProviderWrapper = ({
         setCacheRestored(true);
       } catch (error) {
         console.error("Error restoring Apollo cache:", error);
-        setCacheRestored(true); // Continue even if cache restoration fails
+        localStorage.removeItem("teebloc-apollo-cache-v2");
+        setCacheRestored(true);
       }
     };
 
