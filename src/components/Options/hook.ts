@@ -43,7 +43,14 @@ export const useQueryParamsState = (query: string, initialValue: any) => {
       ignoreQueryPrefix: true,
       arrayLimit: 100,
     });
-    return parsed[query] || initialValue;
+    const value = parsed[query] || initialValue;
+    // qs.parse can return a string for single-element arrays (e.g. specificLevels[0]=Secondary 2).
+    // When the caller expects an array (initialValue is []), coerce to array to prevent
+    // ".includes is not a function" errors downstream.
+    if (Array.isArray(initialValue) && !Array.isArray(value)) {
+      return [value];
+    }
+    return value;
   }, [searchParams, query]);
 
   // If value is an array, return an array of objects with value and label. If not, just return one <object data="
