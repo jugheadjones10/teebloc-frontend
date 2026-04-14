@@ -1,23 +1,115 @@
 import {
+  ClipPath,
+  Defs,
   Document,
+  G,
   Image,
+  Link,
   Page,
+  Path,
+  Rect,
   StyleSheet,
+  Svg,
   Text,
   View,
 } from "@react-pdf/renderer";
 import { DownloadType } from "./pdfDownloadButton";
 
+const TEEBLOC_URL = "https://teebloc.com";
+
 // Number of MCQ text answers to show per row in the multi-column grid
 const MCQ_COLUMNS = 5;
+
+const LOGO_SIZE = 36;
+
+function TeeblocIcon({ size = LOGO_SIZE }: { size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 282 282">
+      <Rect width="282" height="282" rx="32" ry="32" fill="#38B6FF" />
+      <Rect x="110.875" y="54" width="65.625" height="175" rx="21" ry="21" fill="white" />
+      <Path
+        d="M194 54V68C194 79.598 203.402 89 215 89H229V98.625C229 110.223 219.598 119.625 208 119.625H75C63.402 119.625 54 110.223 54 98.625V75C54 63.402 63.402 54 75 54H194Z"
+        fill="white"
+      />
+      <G clipPath="url(#clip0_15_222)">
+        <Path d="M194 54L229 89H194V54Z" fill="#184F6E" />
+      </G>
+      <Defs>
+        <ClipPath id="clip0_15_222">
+          <Path
+            d="M194 54H229V89H202.75C197.918 89 194 85.0825 194 80.25V54Z"
+            fill="white"
+          />
+        </ClipPath>
+      </Defs>
+    </Svg>
+  );
+}
+
+function Header() {
+  return (
+    <View style={styles.header} fixed>
+      <Link src={TEEBLOC_URL} style={styles.headerLink}>
+        <View style={styles.headerLogoRow}>
+          <TeeblocIcon />
+          <Text style={styles.headerText}>Teebloc</Text>
+        </View>
+      </Link>
+    </View>
+  );
+}
+
+function Footer() {
+  return (
+    <View style={styles.footer} fixed>
+      <Link src={TEEBLOC_URL} style={styles.footerLink}>
+        <Text style={styles.footerText}>teebloc</Text>
+      </Link>
+    </View>
+  );
+}
 
 // Define styles for the PDF document
 const styles = StyleSheet.create({
   page: {
     paddingTop: 10,
+    paddingBottom: 40,
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  headerLink: {
+    textDecoration: "none",
+  },
+  headerLogoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  headerText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1e293b",
+  },
+  footer: {
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  footerLink: {
+    textDecoration: "none",
+  },
+  footerText: {
+    fontSize: 10,
+    color: "#38B6FF",
+    fontWeight: "bold",
   },
   questionContainer: {
     marginTop: 20,
@@ -44,6 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingLeft: 10,
     paddingRight: 10,
+    paddingBottom: 40,
   },
   answersTitle: {
     fontSize: 30,
@@ -102,6 +195,7 @@ export function PDFDocument({
       {(downloadType === DownloadType.FULL ||
         downloadType === DownloadType.QUESTIONS_ONLY) && (
         <Page size="A4" style={styles.page}>
+          <Header />
           {questions.map((question, questionIndex) =>
             question.questionimgs
               .sort((a, b) => {
@@ -138,12 +232,14 @@ export function PDFDocument({
                 </View>
               ))
           )}
+          <Footer />
         </Page>
       )}
 
       {(downloadType === DownloadType.FULL ||
         downloadType === DownloadType.ANSWERS_ONLY) && (
         <Page size="A4" style={styles.answersPage}>
+          <Header />
           <Text style={styles.answersTitle}>Answers</Text>
 
           {(() => {
@@ -220,6 +316,7 @@ export function PDFDocument({
 
             return elements;
           })()}
+          <Footer />
         </Page>
       )}
     </Document>

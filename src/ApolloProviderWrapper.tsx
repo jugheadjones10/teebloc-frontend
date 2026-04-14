@@ -177,11 +177,11 @@ export const ApolloProviderWrapper = ({
                   } = args;
 
                   const key = JSON.stringify([
-                    ...topicnames,
-                    ...levels,
-                    ...papers,
-                    ...assessmentnames,
-                    ...schoolnames,
+                    ...(topicnames || []),
+                    ...(levels || []),
+                    ...(papers || []),
+                    ...(assessmentnames || []),
+                    ...(schoolnames || []),
                     ...(isactiveFilter || [true]),
                   ]);
 
@@ -211,11 +211,11 @@ export const ApolloProviderWrapper = ({
                   } = destructureArgs(args);
 
                   const key = JSON.stringify([
-                    ...topicnames,
-                    ...levels,
-                    ...papers,
-                    ...assessmentnames,
-                    ...schoolnames,
+                    ...(topicnames || []),
+                    ...(levels || []),
+                    ...(papers || []),
+                    ...(assessmentnames || []),
+                    ...(schoolnames || []),
                     ...(isactiveFilter || [true]),
                   ]);
 
@@ -271,7 +271,7 @@ export const ApolloProviderWrapper = ({
         await persistCache({
           cache: apolloClient.cache,
           storage: new LocalStorageWrapper(window.localStorage),
-          key: "teebloc-apollo-cache",
+          key: "teebloc-apollo-cache-v2",
           maxSize: 1024 * 1024 * 5, // 5MB
           serialize: true,
           trigger: "write", // Persist on every cache write

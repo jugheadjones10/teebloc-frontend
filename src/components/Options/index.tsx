@@ -64,6 +64,15 @@ export default function Options() {
   );
   const [resetSpecificLevels, setResetSpecificLevels] = useState(false);
 
+  const cumulativeQueryLevels = useMemo(() => {
+    const chosen = specificLevelsChosen || [];
+    const hasS2 = chosen.includes("Secondary 2");
+    if (!hasS2) return chosen;
+
+    const hasS1 = chosen.includes("Secondary 1");
+    return hasS1 ? chosen : [...chosen, "Secondary 1"];
+  }, [specificLevelsChosen]);
+
   const subjects = useMemo(
     () =>
       allData?.subjects
@@ -265,7 +274,7 @@ export default function Options() {
       offset: 0,
       limit: 20,
       topics: topicsChosen || [],
-      levels: specificLevelsChosen || [],
+      levels: cumulativeQueryLevels,
       papers: papersChosen || [],
       assessments: assessmentsChosen || [],
       schools: schoolsChosen || [],
@@ -313,7 +322,7 @@ export default function Options() {
     {
       variables: {
         topics: topicsChosen || [],
-        levels: specificLevelsChosen || [],
+        levels: cumulativeQueryLevels,
         papers: papersChosen || [],
         assessments: assessmentsChosen || [],
         schools: schoolsChosen || [],
