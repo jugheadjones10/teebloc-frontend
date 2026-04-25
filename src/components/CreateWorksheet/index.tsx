@@ -99,11 +99,12 @@ export default function CreateWorksheet() {
 
   const [downloadLoading, setDownloadLoading] = useState(false);
 
-  async function downloadPDF(questions: any[]) {
+  async function downloadPDF(questions: any[], worksheetTitle?: string) {
     const doc = (
       <PDFDocument
         questionsData={{ questions }}
         downloadType={DownloadType.FULL}
+        worksheetTitle={worksheetTitle}
       />
     );
     const asPdf = pdf(doc);
@@ -152,10 +153,12 @@ export default function CreateWorksheet() {
         cartItems = questions.map((q) => q.id);
       }
 
+      const worksheetName = `Worksheet ${new Date().toLocaleDateString()}`;
+
       // First create the worksheet
       const { data: worksheetData } = await createWorksheet({
         variables: {
-          name: `Worksheet ${new Date().toLocaleDateString()}`,
+          name: worksheetName,
           questions_order: cartItems,
         },
       });
@@ -178,7 +181,7 @@ export default function CreateWorksheet() {
         });
       }
 
-      await downloadPDF(questions);
+      await downloadPDF(questions, worksheetName);
       if (freeWorksheetsLeft > 0) {
         await decrementFreeWorksheets({ variables: { userid: user.id } });
       }

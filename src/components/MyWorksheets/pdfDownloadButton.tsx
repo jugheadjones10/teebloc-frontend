@@ -81,10 +81,11 @@ export default function PDFDownloadButton({
           ),
         };
 
-        // Pass questionsOnly parameter to the worker
+        // Pass worksheet metadata to the worker so the PDF can render the title.
         const url: string = await pdfWorker.renderPDF(
           result.data,
-          downloadType
+          downloadType,
+          worksheet.name
         );
 
         const pdfWindow = window.open(url, "_blank");

@@ -5,7 +5,11 @@ import "./workerShim";
 
 // The worker function accepts the questions data (or any props needed by PDFDocument),
 // creates the PDF document, converts it to a blob, and returns a blob URL.
-const renderPDF = async (questionsData: any, downloadType: DownloadType) => {
+const renderPDF = async (
+  questionsData: any,
+  downloadType: DownloadType,
+  worksheetTitle?: string
+) => {
   const { pdf } = await import("@react-pdf/renderer");
   const { PDFDocument } = await import("../components/MyWorksheets/pdf");
 
@@ -14,6 +18,7 @@ const renderPDF = async (questionsData: any, downloadType: DownloadType) => {
     createElement(PDFDocument, {
       questionsData,
       downloadType,
+      worksheetTitle,
     })
   ).toBlob();
 

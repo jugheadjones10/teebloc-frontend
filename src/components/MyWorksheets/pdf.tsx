@@ -59,6 +59,17 @@ function Header() {
   );
 }
 
+function WorksheetTitle({ title }: { title?: string }) {
+  const headerTitle = title?.trim();
+  if (!headerTitle) return null;
+
+  return (
+    <View style={styles.worksheetTitleContainer}>
+      <Text style={styles.worksheetTitle}>{headerTitle}</Text>
+    </View>
+  );
+}
+
 function Footer() {
   return (
     <View style={styles.footer} fixed>
@@ -72,13 +83,17 @@ function Footer() {
 // Define styles for the PDF document
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 10,
+    paddingTop: 50,
     paddingBottom: 40,
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
   },
   header: {
+    position: "absolute",
+    top: 10,
+    left: 0,
+    right: 0,
     width: "100%",
     alignItems: "center",
     marginBottom: 4,
@@ -95,6 +110,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#1e293b",
+  },
+  worksheetTitleContainer: {
+    position: "absolute",
+    top: 10,
+    left: 0,
+    right: 0,
+    width: "100%",
+    minHeight: LOGO_SIZE,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  worksheetTitle: {
+    width: "90%",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1e293b",
+    textAlign: "center",
   },
   footer: {
     position: "absolute",
@@ -134,6 +167,7 @@ const styles = StyleSheet.create({
   answersPage: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
+    paddingTop: 50,
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 40,
@@ -171,9 +205,11 @@ const styles = StyleSheet.create({
 export function PDFDocument({
   questionsData,
   downloadType,
+  worksheetTitle,
 }: {
   questionsData: any;
   downloadType: DownloadType;
+  worksheetTitle?: string;
 }) {
   if (!questionsData) return null;
 
@@ -196,6 +232,7 @@ export function PDFDocument({
         downloadType === DownloadType.QUESTIONS_ONLY) && (
         <Page size="A4" style={styles.page}>
           <Header />
+          <WorksheetTitle title={worksheetTitle} />
           {questions.map((question, questionIndex) =>
             question.questionimgs
               .sort((a, b) => {
@@ -240,6 +277,7 @@ export function PDFDocument({
         downloadType === DownloadType.ANSWERS_ONLY) && (
         <Page size="A4" style={styles.answersPage}>
           <Header />
+          <WorksheetTitle title={worksheetTitle} />
           <Text style={styles.answersTitle}>Answers</Text>
 
           {(() => {
