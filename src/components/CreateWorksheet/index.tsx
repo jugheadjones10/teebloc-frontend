@@ -167,10 +167,11 @@ export default function CreateWorksheet() {
 
       // Then create the worksheet-question relationships
       if (worksheetData?.insert_worksheets_one?.id) {
+        const worksheetId = worksheetData.insert_worksheets_one.id;
         await createWorksheetQuestions({
           variables: {
             objects: cartItems.map((questionId: string) => ({
-              worksheet_id: worksheetData.insert_worksheets_one.id,
+              worksheet_id: worksheetId,
               question_id: questionId,
             })),
           },

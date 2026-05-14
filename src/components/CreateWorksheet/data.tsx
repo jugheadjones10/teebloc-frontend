@@ -1,4 +1,4 @@
-import { makeVar, ReactiveVar } from "@apollo/client";
+import { makeVar } from "@apollo/client";
 import { gql } from "../../__generated__/gql";
 
 const getCleanValueForStorage = (value: unknown) => {
