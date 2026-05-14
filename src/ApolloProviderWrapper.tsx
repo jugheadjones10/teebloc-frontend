@@ -60,7 +60,7 @@ export const ApolloProviderWrapper = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const [cacheRestored, setCacheRestored] = useState(false);
 
   const apolloClient = useMemo(() => {
@@ -68,11 +68,15 @@ export const ApolloProviderWrapper = ({
       const adminSecret = import.meta.env.VITE_X_HASURA_ADMIN_SECRET;
 
       if (adminSecret) {
-        // Dev: use admin secret
+        // Dev: use admin secret. Admin secret is only set in local .env for development.
         return {
           headers: {
             ...headers,
             "x-hasura-admin-secret": adminSecret,
+            ...(userId && {
+              "x-hasura-role": "user",
+              "x-hasura-user-id": userId,
+            }),
           },
         };
       }
@@ -270,7 +274,7 @@ export const ApolloProviderWrapper = ({
       link: from([authMiddleware, httpLink]),
       cache,
     });
-  }, [getToken]);
+  }, [getToken, userId]);
 
   // Local storage caching so that data like ALL_DATA can immediately be used
   // to show the options.
