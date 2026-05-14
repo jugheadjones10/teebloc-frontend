@@ -8,7 +8,7 @@ import {
   useClerk,
 } from "@clerk/clerk-react";
 import { twMerge } from "tailwind-merge";
-import { Link, useLocation, useRoute } from "wouter";
+import { Link, useLocation } from "wouter";
 import { cartItemsVar } from "../CreateWorksheet/data.tsx";
 import posthog from "posthog-js";
 import { useState, useEffect, useRef } from "react";
@@ -28,7 +28,7 @@ export default function Navbar({
   const cartItems = useReactiveVar(cartItemsVar);
   const [location, setLocation] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const onSignOut = () => {
     posthog.reset();
@@ -53,12 +53,12 @@ export default function Navbar({
     };
   }, [menuOpen]);
 
-  const [queryString, setQueryString] = useState(
-    localStorage.getItem("questionsSearchParams") || ""
-  );
+  const questionsSearchParams =
+    localStorage.getItem("questionsSearchParams") || "";
+  const [queryString, setQueryString] = useState(questionsSearchParams);
   useEffect(() => {
-    setQueryString(localStorage.getItem("questionsSearchParams") || "");
-  }, [localStorage.getItem("questionsSearchParams")]);
+    setQueryString(questionsSearchParams);
+  }, [questionsSearchParams]);
 
   return (
     <div className="sticky top-0 z-10 p-4">
@@ -86,11 +86,11 @@ export default function Navbar({
                 <a
                   className={twMerge(
                     "hover:bg-base-300",
-                    location.startsWith("/practice") ? "bg-base-300" : ""
+                    location.startsWith("/practice") ? "bg-base-300" : "",
                   )}
                   onClick={() =>
                     setLocation(
-                      `/practice${queryString ? `?${queryString}` : ""}`
+                      `/practice${queryString ? `?${queryString}` : ""}`,
                     )
                   }
                 >
@@ -101,7 +101,7 @@ export default function Navbar({
                 <a
                   className={twMerge(
                     "hover:bg-base-300",
-                    location.startsWith("/writing") ? "bg-base-300" : ""
+                    location.startsWith("/writing") ? "bg-base-300" : "",
                   )}
                   onClick={() => setLocation("/writing")}
                 >
@@ -164,7 +164,7 @@ function NavItems({
   surveyProps,
 }: {
   location: string;
-  cartItems: any[]; // Replace 'any' with the correct type if known
+  cartItems: unknown[];
   onSignOut: () => void;
   surveyProps: {
     hasDoneSurvey: boolean;
@@ -173,14 +173,21 @@ function NavItems({
   };
 }) {
   const { getToken } = useAuth();
-  const [writingMatch] = useRoute("/writing");
   const practiceMatch = location.startsWith("/practice");
   const { hasActiveSubscription, loading } = useSubscription();
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState("");
 
   // Modified from https://clerk.com/docs/backend-requests/making/cross-origin
-  const authenticatedFetch = async (url: string, options?: RequestInit) => {
+  const authenticatedFetch = async (
+    url: RequestInfo | URL,
+    options?: RequestInit,
+  ): Promise<{ url?: string; error?: boolean; message?: string }> => {
     const token = await getToken();
+    if (!token) {
+      throw new Error("Could not authenticate your session.");
+    }
+
     return fetch(url, {
       ...options,
       headers: {
@@ -188,10 +195,11 @@ function NavItems({
         Authorization: `Bearer ${token}`,
       },
     }).then(async (res) => {
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+        throw new Error(data.message || `HTTP error! status: ${res.status}`);
       }
-      return res.json();
+      return data;
     });
   };
 
@@ -285,6 +293,7 @@ function NavItems({
                   onClick={async () => {
                     if (isPortalLoading) return;
                     setIsPortalLoading(true);
+                    setPortalError("");
                     try {
                       const response = await authenticatedFetch(
                         `${
@@ -292,11 +301,31 @@ function NavItems({
                         }/create-portal-session`,
                         {
                           method: "POST",
-                        }
+                        },
                       );
+                      if (response.error) {
+                        throw new Error(
+                          response.message ||
+                            "Could not create Stripe portal session.",
+                        );
+                      }
                       if (response.url) {
                         window.location.href = response.url;
+                      } else {
+                        throw new Error(
+                          "Stripe portal session did not include a redirect URL.",
+                        );
                       }
+                    } catch (error) {
+                      console.error(
+                        "There was a problem opening the Stripe portal:",
+                        error,
+                      );
+                      setPortalError(
+                        error instanceof Error
+                          ? error.message
+                          : "Could not open the Stripe portal.",
+                      );
                     } finally {
                       setIsPortalLoading(false);
                     }
@@ -311,6 +340,13 @@ function NavItems({
                     "Manage subscription"
                   )}
                 </a>
+              </li>
+            )}
+            {portalError && (
+              <li>
+                <span className="text-xs text-error" role="alert">
+                  {portalError}
+                </span>
               </li>
             )}
             <li>
