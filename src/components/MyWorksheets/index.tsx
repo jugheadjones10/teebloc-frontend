@@ -79,13 +79,13 @@ export default function MyWorksheets() {
   const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
+    const nextSortedWorksheets = [...filteredWorksheets].sort((a, b) => {
+      return new Date(b.created).getTime() - new Date(a.created).getTime();
+    });
+
+    setSortedWorksheets(nextSortedWorksheets);
     if (isChanged) {
-      const sortedWorksheets = [...filteredWorksheets].sort((a, b) => {
-        return new Date(b.created).getTime() - new Date(a.created).getTime();
-      });
-      setSortedWorksheets(sortedWorksheets);
       setIsChanged(false);
-      console.log("Sorted worksheets:", sortedWorksheets);
     }
   }, [filteredWorksheets, isChanged]);
 
