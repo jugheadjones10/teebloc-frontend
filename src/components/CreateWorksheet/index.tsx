@@ -2,6 +2,7 @@ import { useUser } from "@clerk/clerk-react";
 import Question from "../Question";
 import { twMerge } from "tailwind-merge";
 import { useQuery, useReactiveVar, useMutation } from "@apollo/client";
+import { wrap } from "comlink";
 import {
   GET_QUESTIONS_BY_ID,
   cartItemsVar,
@@ -12,8 +13,6 @@ import {
 } from "./data";
 import posthog from "posthog-js";
 import { useCallback, useState } from "react";
-import { PDFDocument } from "../MyWorksheets/pdf";
-import { pdf } from "@react-pdf/renderer";
 import { useSubscription } from "../../hooks/useSubscription";
 import { useQuestionLimit } from "../../hooks/useQuestionLimit";
 import { showToast } from "../Toast";
@@ -24,6 +23,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { isReorderModeVar } from "./data";
 import { _ } from "lodash";
 import { DownloadType } from "../MyWorksheets/pdfDownloadButton";
+import PdfWorker from "../../workers/pdf.worker?worker";
 
 export default function CreateWorksheet() {
   const [location, setLocation] = useLocation();
@@ -100,19 +100,21 @@ export default function CreateWorksheet() {
   const [downloadLoading, setDownloadLoading] = useState(false);
 
   async function downloadPDF(questions: any[], worksheetTitle?: string) {
-    const doc = (
-      <PDFDocument
-        questionsData={{ questions }}
-        downloadType={DownloadType.FULL}
-        worksheetTitle={worksheetTitle}
-      />
-    );
-    const asPdf = pdf(doc);
-    const blob = await asPdf.toBlob();
+    const worker = new PdfWorker();
 
-    const url = URL.createObjectURL(blob);
-    const newTab = window.open(url, "_blank");
-    newTab.focus();
+    try {
+      const pdfWorker = wrap(worker) as any;
+      const url: string = await pdfWorker.renderPDF(
+        { questions },
+        DownloadType.FULL,
+        worksheetTitle
+      );
+
+      const newTab = window.open(url, "_blank");
+      newTab?.focus();
+    } finally {
+      worker.terminate();
+    }
   }
 
   const handleDownload = async () => {

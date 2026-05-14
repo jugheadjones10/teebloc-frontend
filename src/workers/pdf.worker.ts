@@ -19,7 +19,7 @@ const renderPDF = async (
       questionsData,
       downloadType,
       worksheetTitle,
-    })
+    }) as any
   ).toBlob();
 
   // Create and return a URL for the blob so that it can be downloaded/opened.
