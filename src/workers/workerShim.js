@@ -21,7 +21,8 @@ if (
 
 if (import.meta.env.DEV) {
   // Dynamically import react-refresh only in development
-  import(/* @vite-ignore */ "/@react-refresh")
+  const reactRefreshUrl = `${self.location.origin}/@react-refresh`;
+  import(/* @vite-ignore */ reactRefreshUrl)
     .then((module) => {
       const RefreshRuntime = module.default;
       RefreshRuntime.injectIntoGlobalHook(window);
