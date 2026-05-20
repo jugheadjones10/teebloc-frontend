@@ -21,6 +21,8 @@ const TEEBLOC_URL = "https://teebloc.com";
 const MCQ_COLUMNS = 5;
 
 const LOGO_SIZE = 36;
+const QUESTION_IMAGE_WIDTH = 400;
+const QUESTION_IMAGE_MAX_HEIGHT = 680;
 
 function TeeblocIcon({ size = LOGO_SIZE }: { size?: number }) {
   return (
@@ -161,8 +163,8 @@ const styles = StyleSheet.create({
   questionImage: {
     // Using width: "70%" sometimes causes the PDF rendering to take infinitely long.
     // width: "70%",
-    width: 400,
-    maxHeight: 800,
+    width: QUESTION_IMAGE_WIDTH,
+    maxHeight: QUESTION_IMAGE_MAX_HEIGHT,
   },
   answersPage: {
     flexDirection: "column",
@@ -213,8 +215,7 @@ export function PDFDocument({
 }) {
   if (!questionsData) return null;
 
-  let questions = JSON.parse(JSON.stringify(questionsData.questions));
-  console.log(questions);
+  const questions: any[] = JSON.parse(JSON.stringify(questionsData.questions));
 
   // Add metadata to the sortedQuestions: for the images, add image_url in the form of
   // https://equally-clean-dogfish.ngrok-free.app/images/question/{questionimgid}
@@ -233,9 +234,9 @@ export function PDFDocument({
         <Page size="A4" style={styles.page}>
           <Header />
           <WorksheetTitle title={worksheetTitle} />
-          {questions.map((question, questionIndex) =>
+          {questions.map((question: any, questionIndex: number) =>
             question.questionimgs
-              .sort((a, b) => {
+              .sort((a: any, b: any) => {
                 const regex = /Q(\d+)-(\d+)\./;
                 const aMatch = a.questionimgname.match(regex);
                 const bMatch = b.questionimgname.match(regex);
@@ -245,7 +246,7 @@ export function PDFDocument({
                   return 0;
                 }
               })
-              .map((questionImage, index) => (
+              .map((questionImage: any, index: number) => (
                 <View
                   key={questionImage.questionimgid}
                   style={{
@@ -304,13 +305,13 @@ export function PDFDocument({
               mcqBatch = [];
             };
 
-            questions.forEach((question, questionIndex) => {
+            questions.forEach((question: any, questionIndex: number) => {
               const qNum = questionIndex + 1;
 
               if (question.answerimgs.length > 0) {
                 flushMcqBatch();
 
-                const sortedAnswerImgs = question.answerimgs.sort((a, b) => {
+                const sortedAnswerImgs = question.answerimgs.sort((a: any, b: any) => {
                   const regex = /Q(\d+)-(\d+)\./;
                   const aMatch = a.answerimgname.match(regex);
                   const bMatch = b.answerimgname.match(regex);
@@ -322,7 +323,7 @@ export function PDFDocument({
 
                 elements.push(
                   <View key={question.id} style={styles.answerContainer}>
-                    {sortedAnswerImgs.map((answerImage, index) => (
+                    {sortedAnswerImgs.map((answerImage: any, index: number) => (
                       <View
                         key={answerImage.answerimgid}
                         style={styles.answerImageContainer}

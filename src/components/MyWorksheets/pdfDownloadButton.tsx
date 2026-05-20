@@ -62,21 +62,23 @@ export default function PDFDownloadButton({
 
     let worker: Worker | null = null;
     try {
+      const orderedQuestionIds = worksheet.questions_order ?? [];
+
       const result = await useLazyQuestionsQuery(
         client,
         GET_QUESTIONS_BY_ID,
         {
-          ids: worksheet.questions_order,
+          ids: orderedQuestionIds,
         },
         worksheet.worksheets_to_questions.length
       );
       if (result.data) {
         // Instantiate a new worker for this download
         worker = new Worker();
-        const pdfWorker = wrap(worker);
+        const pdfWorker = wrap(worker) as any;
 
         result.data = {
-          questions: worksheet.questions_order.map((id: string) =>
+          questions: orderedQuestionIds.map((id: string) =>
             result.data.questions.find((q: any) => q.id === id)
           ),
         };
