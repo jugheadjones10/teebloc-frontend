@@ -18,6 +18,7 @@ import posthog from "posthog-js";
 import { useIsAdmin } from "../../hooks/useIsAdmin";
 import { WorksheetsMappingContext } from "../../context/WorksheetsMappingContext";
 import RowSelect from "./rowSelect";
+import { Questions_Bool_Exp } from "../../__generated__/graphql";
 
 export interface Option {
   readonly value: string;
@@ -262,11 +263,33 @@ export default function Options() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const mcqanswerFilter = useMemo(() => {
-    if (questionTypesChosen.length === 0 || questionTypesChosen.length === 2) {
+  const questionTypeFilter = useMemo<Questions_Bool_Exp>(() => {
+    const chosenTypes = toArray(questionTypesChosen);
+
+    if (chosenTypes.length === 0 || chosenTypes.length === 2) {
       return {};
     }
-    return { _is_null: questionTypesChosen[0] === "OE" };
+
+    const legacyMcqFilter: Questions_Bool_Exp = {
+      _and: [
+        { mcqanswer: { _is_null: true } },
+        { level: { level: { _in: ["Primary 3", "Primary 4"] } } },
+        { paper: { paper: { _eq: 1 } } },
+      ],
+    };
+
+    if (chosenTypes[0] === "MCQ") {
+      return {
+        _or: [{ mcqanswer: { _is_null: false } }, legacyMcqFilter],
+      };
+    }
+
+    return {
+      _and: [
+        { mcqanswer: { _is_null: true } },
+        { _not: legacyMcqFilter },
+      ],
+    };
   }, [questionTypesChosen]);
 
   // Questions query
@@ -286,7 +309,7 @@ export default function Options() {
       assessments: toArray(assessmentsChosen),
       schools: toArray(schoolsChosen),
       isactiveFilter,
-      mcqanswerFilter,
+      questionTypeFilter,
     },
   });
   const { user } = useUser();
@@ -335,7 +358,7 @@ export default function Options() {
         schools: toArray(schoolsChosen),
         excludedIds: usedIDs,
         isactiveFilter,
-        mcqanswerFilter,
+        questionTypeFilter,
       },
     },
   );
@@ -550,7 +573,7 @@ export default function Options() {
       : toArray(questionTypesChosen).filter((t) => t !== type);
     setQuestionTypesChosen(newTypes);
 
-    // Paper constraint: MCQ only → lock to Paper 1, otherwise reset to all
+    // Paper constraint: MCQ only -> lock to Paper 1, otherwise reset to all
     const isMcqOnly = newTypes.length === 1 && newTypes[0] === "MCQ";
     if (isMcqOnly) {
       setPapersChosen(["1"]);

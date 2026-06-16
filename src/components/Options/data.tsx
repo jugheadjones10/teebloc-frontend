@@ -115,7 +115,7 @@ query GetQuestions(
   $assessments: [String!], 
   $schools: [String!],
   $isactiveFilter: [Boolean!],
-  $mcqanswerFilter: String_comparison_exp
+  $questionTypeFilter: questions_bool_exp!
 ) {
   questions_aggregate(
     where: {
@@ -125,7 +125,7 @@ query GetQuestions(
       assessment: { assessmentname: { _in: $assessments } },
       school: { schoolname: { _in: $schools } },
       isactive: { _in: $isactiveFilter },
-      mcqanswer: $mcqanswerFilter
+      _and: [$questionTypeFilter]
     }
   ) {
     aggregate {
@@ -140,7 +140,7 @@ query GetQuestions(
       assessment: { assessmentname: { _in: $assessments } },
       school: { schoolname: { _in: $schools } },
       isactive: { _in: $isactiveFilter },
-      mcqanswer: $mcqanswerFilter
+      _and: [$questionTypeFilter]
     },
     offset: $offset,
     limit: $limit
@@ -185,7 +185,7 @@ export const GET_QUESTION_AGGREGATES = gql(`
     $schools: [String!],
     $excludedIds: [String!],
     $isactiveFilter: [Boolean!],
-    $mcqanswerFilter: String_comparison_exp
+    $questionTypeFilter: questions_bool_exp!
   ) {
     all: questions_aggregate(
       where: {
@@ -195,7 +195,7 @@ export const GET_QUESTION_AGGREGATES = gql(`
         assessment: { assessmentname: { _in: $assessments } },
         school: { schoolname: { _in: $schools } },
         isactive: { _in: $isactiveFilter },
-        mcqanswer: $mcqanswerFilter
+        _and: [$questionTypeFilter]
       }
     ) {
       aggregate {
@@ -210,7 +210,7 @@ export const GET_QUESTION_AGGREGATES = gql(`
         assessment: { assessmentname: { _in: $assessments } },
         school: { schoolname: { _in: $schools } },
         isactive: { _in: $isactiveFilter },
-        mcqanswer: $mcqanswerFilter,
+        _and: [$questionTypeFilter],
         id: { _nin: $excludedIds }
       }
     ) {
