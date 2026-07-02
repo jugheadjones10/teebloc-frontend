@@ -259,7 +259,12 @@ const Question = memo(function Question({
             // {cartItems.includes(q.id) ? (
             <button
               onClick={
-                () => cartItemsVar(cartItemsVar().filter((id) => id !== q.id))
+                () =>
+                  cartItemsVar(
+                    (cartItemsVar() as string[]).filter(
+                      (id: string) => id !== q.id
+                    )
+                  )
                 //   cartItemsVar(cartItems.filter((id) => id !== q.id))
               }
               className="btn"
@@ -278,7 +283,11 @@ const Question = memo(function Question({
                   );
                   return;
                 }
-                cartItemsVar([...cartItemsVar(), q.id]);
+                const currentCartItems = cartItemsVar();
+                if (currentCartItems.includes(q.id)) {
+                  return;
+                }
+                cartItemsVar([...currentCartItems, q.id]);
                 posthog.capture("question_added_to_worksheet", {
                   questionId: q.id,
                   topicNames: q.question_topics.map((qt) => qt.topic.topicname),

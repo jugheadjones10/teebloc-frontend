@@ -123,7 +123,8 @@ export default function CreateWorksheet() {
     try {
       setDownloadLoading(true);
 
-      let cartItems = cartItemsVar();
+      // Safety guard to prevent duplicate questions
+      let cartItems = [...new Set(cartItemsVar() as string[])];
 
       if (cartItems.length > maxQuestions) {
         showToast(
