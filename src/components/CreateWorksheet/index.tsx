@@ -390,6 +390,7 @@ export default function CreateWorksheet() {
           {freeWorksheetsLeft > 0 ? (
             <button
               onClick={handleDownload}
+              disabled={downloadLoading || cartItems.length === 0}
               className={twMerge(
                 "btn btn-primary btn-lg w-56",
                 cartItems.length === 0 && "btn-disabled"
@@ -408,7 +409,7 @@ export default function CreateWorksheet() {
                   handleDownload();
                 }
               }}
-              disabled={subscriptionStateLoading}
+              disabled={subscriptionStateLoading || downloadLoading}
               className={twMerge(
                 "btn btn-neutral btn-lg w-56",
                 !hasActiveSubscription && "btn-outline "
