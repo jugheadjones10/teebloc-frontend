@@ -22,7 +22,7 @@ export async function useLazyQuestionsQuery(
   client: any,
   query: any,
   variables: any,
-  expectedNumQuestions: number
+  expectedNumQuestions: number,
 ) {
   const response = await client.query({
     query,
