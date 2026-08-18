@@ -1,15 +1,12 @@
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import Question from "../Question";
 import { twMerge } from "tailwind-merge";
-import { useQuery, useReactiveVar, useMutation } from "@apollo/client";
+import { useApolloClient, useQuery, useReactiveVar } from "@apollo/client";
 import { wrap } from "comlink";
 import {
   GET_QUESTIONS_BY_ID,
   cartItemsVar,
   GET_FREE_WORKSHEETS_LEFT,
-  DECREMENT_FREE_WORKSHEETS,
-  CREATE_WORKSHEET,
-  CREATE_WORKSHEET_QUESTIONS,
 } from "./data";
 import posthog from "posthog-js";
 import { useCallback, useState } from "react";
@@ -24,9 +21,15 @@ import { isReorderModeVar } from "./data";
 import { _ } from "lodash";
 import { DownloadType } from "../MyWorksheets/pdfDownloadButton";
 import PdfWorker from "../../workers/pdf.worker?worker";
+import {
+  createWorksheet,
+  WorksheetApiError,
+} from "../../api/worksheets";
 
 export default function CreateWorksheet() {
   const [location, setLocation] = useLocation();
+  const client = useApolloClient();
+  const { getToken } = useAuth();
   const { user } = useUser();
   const cartItems = useReactiveVar(cartItemsVar);
   const isReorderMode = useReactiveVar(isReorderModeVar);
@@ -54,23 +57,13 @@ export default function CreateWorksheet() {
   });
 
   // Query for number of free worksheets left
-  const { data: freeWorksheetsData } = useQuery(GET_FREE_WORKSHEETS_LEFT, {
-    variables: { userid: user?.id || "" },
-    skip: !user?.id,
-  });
-
-  // Mutation for decrementing free worksheets
-  const [decrementFreeWorksheets] = useMutation(DECREMENT_FREE_WORKSHEETS, {
-    refetchQueries: [GET_FREE_WORKSHEETS_LEFT],
-    variables: { userid: user?.id || "" },
-  });
-
-  const [createWorksheet] = useMutation(CREATE_WORKSHEET, {
-    refetchQueries: [GET_USER_WORKSHEETS],
-  });
-  const [createWorksheetQuestions] = useMutation(CREATE_WORKSHEET_QUESTIONS, {
-    refetchQueries: [GET_USER_WORKSHEETS],
-  });
+  const { data: freeWorksheetsData, refetch: refetchFreeWorksheets } = useQuery(
+    GET_FREE_WORKSHEETS_LEFT,
+    {
+      variables: { userid: user?.id || "" },
+      skip: !user?.id,
+    },
+  );
 
   const unsortedQuestions = q_data?.questions ?? [];
 
@@ -158,43 +151,30 @@ export default function CreateWorksheet() {
 
       const worksheetName = `Worksheet ${new Date().toLocaleDateString()}`;
 
-      // First create the worksheet
-      const { data: worksheetData } = await createWorksheet({
-        variables: {
-          name: worksheetName,
-          questions_order: cartItems,
-        },
+      await createWorksheet({
+        getToken,
+        name: worksheetName,
+        questionIds: cartItems,
       });
 
-      // Then create the worksheet-question relationships
-      if (worksheetData?.insert_worksheets_one?.id) {
-        const worksheetId = worksheetData.insert_worksheets_one.id;
-        await createWorksheetQuestions({
-          variables: {
-            objects: cartItems.map((questionId: string) => ({
-              worksheet_id: worksheetId,
-              question_id: questionId,
-            })),
-          },
-          refetchQueries: [
-            {
-              query: GET_USER_WORKSHEETS,
-              variables: { userid: user.id },
-            },
-          ],
-        });
-      }
+      await Promise.all([
+        refetchFreeWorksheets(),
+        client.refetchQueries({ include: [GET_USER_WORKSHEETS] }),
+      ]);
 
       await downloadPDF(questions, worksheetName);
-      if (freeWorksheetsLeft > 0) {
-        await decrementFreeWorksheets({ variables: { userid: user.id } });
-      }
 
       posthog.capture("user_downloaded_free_worksheet");
       cartItemsVar([]);
       // Switch to the MyWorksheets page
       setLocation("/worksheets");
     } catch (error) {
+      if (error instanceof WorksheetApiError) {
+        showToast(
+          error.message,
+          error.code === "FREE_WORKSHEET_LIMIT_REACHED" ? "warning" : "error",
+        );
+      }
       console.error("There was a problem with the download:", error);
     } finally {
       setDownloadLoading(false);
