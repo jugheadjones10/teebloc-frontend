@@ -1,10 +1,10 @@
-import { useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import posthog from "posthog-js";
 import { useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
 
 export default function Subscribe() {
-  const { user } = useUser();
+  const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,17 +16,19 @@ export default function Subscribe() {
     posthog.capture("user_clicked_subscribe");
 
     try {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Could not authenticate your session.");
+      }
+
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_API}/create-subscription`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            user_id: user?.id,
-            price_id: import.meta.env.VITE_STRIPE_PRICE_ID,
-          }),
         }
       );
 
