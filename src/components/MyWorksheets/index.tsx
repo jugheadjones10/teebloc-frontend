@@ -1,9 +1,8 @@
 import { useApolloClient, useQuery, useMutation } from "@apollo/client";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useMemo, useState, memo } from "react";
 import { GET_USER_WORKSHEETS, UPDATE_WORKSHEET_NAME } from "./data";
 import { GET_QUESTIONS_BY_ID } from "../CreateWorksheet/data";
-import { useIsAdmin } from "../../hooks/useIsAdmin";
 import PDFDownloadButton from "./pdfDownloadButton";
 import FilterBar from "./filterBar";
 import {
@@ -47,9 +46,7 @@ function sortQuestionImages(questionImages: QuestionImage[]) {
 
 export default function MyWorksheets() {
   const client = useApolloClient();
-  const { getToken } = useAuth();
-  const { user } = useUser();
-  const isAdmin = useIsAdmin();
+  const { getToken, userId } = useAuth();
 
   const [editingWorksheetId, setEditingWorksheetId] = useState<number | null>(
     null,
@@ -61,10 +58,6 @@ export default function MyWorksheets() {
     Record<number, boolean>
   >({});
 
-  // Admin: allow viewing another user's worksheets.
-  const [worksheetUserId, setWorksheetUserId] = useState(user?.id || "");
-  const [userIdInput, setUserIdInput] = useState(user?.id || "");
-
   const [updateWorksheetName] = useMutation(UPDATE_WORKSHEET_NAME);
 
   const {
@@ -72,11 +65,7 @@ export default function MyWorksheets() {
     error: w_error,
     data: w_data,
     refetch: refetchWorksheets,
-  } = useQuery(GET_USER_WORKSHEETS, {
-    variables: {
-      userid: worksheetUserId,
-    },
-  });
+  } = useQuery(GET_USER_WORKSHEETS, { skip: !userId });
 
   // Use the custom delete hook for worksheets.
   const { deleteWorksheetById, deletingWorksheet } =
@@ -280,25 +269,6 @@ export default function MyWorksheets() {
   return (
     <>
       <div className="flex flex-col gap-12 mx-8">
-        {/* Admin-only UI: Filter worksheets by user id */}
-        {isAdmin && (
-          <div className="flex items-center gap-2 admin-filter">
-            <input
-              type="text"
-              className="input"
-              placeholder="Enter user ID"
-              value={userIdInput}
-              onChange={(e) => setUserIdInput(e.target.value)}
-            />
-            <button
-              className="btn btn-secondary"
-              onClick={() => setWorksheetUserId(userIdInput)}
-            >
-              Load Worksheets
-            </button>
-          </div>
-        )}
-
         {w_loading && (
           <span className="loading loading-spinner loading-lg"></span>
         )}

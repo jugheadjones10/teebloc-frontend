@@ -221,9 +221,10 @@ export const GET_QUESTION_AGGREGATES = gql(`
   }
 `);
 
+// Hasura applies worksheet ownership through the user-role row permission.
 export const GET_USER_WORKSHEETS = gql(`
-query GetUserWorksheetsForOptions($userid: String!) {
-  worksheets(where: { creator: { _eq: $userid } }) {
+query GetUserWorksheetsForOptions {
+  worksheets {
     id
     name
     worksheets_to_questions {

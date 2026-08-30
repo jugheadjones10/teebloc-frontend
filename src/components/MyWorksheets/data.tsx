@@ -1,8 +1,10 @@
 import { gql } from "../../__generated__/gql";
 
+// Hasura scopes this table to X-Hasura-User-Id for the user role;
+// the creator column is intentionally unavailable as a client-side filter.
 export const GET_USER_WORKSHEETS = gql(`
-query GetUserWorksheets($userid: String!) {
-  worksheets(where: {creator: {_eq: $userid}}) {
+query GetUserWorksheets {
+  worksheets {
     name
     id
     created

@@ -314,7 +314,6 @@ export default function Options() {
   });
   const { user } = useUser();
   const { data: worksheetsData } = useQuery(GET_USER_WORKSHEETS, {
-    variables: { userid: user?.id },
     skip: !user?.id,
   });
 
