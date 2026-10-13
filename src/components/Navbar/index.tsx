@@ -174,7 +174,7 @@ function NavItems({
 }) {
   const { getToken } = useAuth();
   const practiceMatch = location.startsWith("/practice");
-  const { hasActiveSubscription, loading } = useSubscription();
+  const { hasActiveSubscription, canManageBilling, loading } = useSubscription();
   const [isPortalLoading, setIsPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState("");
 
@@ -265,7 +265,7 @@ function NavItems({
               </div>
             </Link>
 
-            {!hasActiveSubscription && !loading && (
+            {!hasActiveSubscription && !canManageBilling && !loading && (
               <Link href="/practice/subscribe">
                 <div
                   className={`btn btn-outline ${
@@ -287,7 +287,7 @@ function NavItems({
             tabIndex={0}
             className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {hasActiveSubscription && (
+            {canManageBilling && (
               <li>
                 <a
                   onClick={async () => {
